@@ -2,9 +2,25 @@
 interface Props {
   title: string;
   description?: string;
+  image?: string;
+  canonicalPath?: string;
+  noindex?: boolean;
 }
 
-const { title, description = "Boldness and Burdens Conference 2026 - School of the Spirit" } = Astro.props;
+const SITE_URL = "https://boldnessandburdens.com";
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1507692049790-de58290a4334?w=1200&q=80";
+const DEFAULT_DESCRIPTION = "Boldness and Burdens Conference 2026 - A transformative youth prayer conference in Berlin. July 16-19, 2026. Free registration.";
+
+const {
+  title,
+  description = DEFAULT_DESCRIPTION,
+  image = DEFAULT_IMAGE,
+  canonicalPath = "",
+  noindex = false
+} = Astro.props;
+
+const canonicalURL = `${SITE_URL}${canonicalPath}`;
+const fullTitle = title.includes("BBC'26") ? title : `${title} | BBC'26`;
 ---
 
 <!DOCTYPE html>
@@ -13,8 +29,35 @@ const { title, description = "Boldness and Burdens Conference 2026 - School of t
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:site_name" content="Boldness and Burdens Conference" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#faf8f5" />
+    <meta name="msapplication-TileColor" content="#faf8f5" />
+
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title}</title>
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <title>{fullTitle}</title>
   </head>
   <body>
     <slot />
