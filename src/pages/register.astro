@@ -17,7 +17,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <!-- Registration Form -->
     <section class="form-section">
       <div class="container container--narrow">
-        <form id="registration-form" class="registration-form">
+        <form
+          id="registration-form"
+          class="registration-form"
+          name="registration"
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          action="/success"
+        >
+          <input type="hidden" name="form-name" value="registration" />
+          <p class="honeypot"><label>Don't fill this out: <input name="bot-field" /></label></p>
 
           <!-- Section 1: Program Information -->
           <div class="form-card animate-fade-in-up">
@@ -286,6 +296,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </BaseLayout>
 
 <style>
+  /* Honeypot (spam protection) */
+  .honeypot {
+    display: none !important;
+  }
+
   /* Page Header */
   .page-header {
     padding: var(--space-2xl) 0 var(--space-xl);
@@ -654,19 +669,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     });
   });
 
-  // Form submission
+  // Form validation before submission (Netlify handles the actual submission)
   const form = document.getElementById('registration-form');
 
   form?.addEventListener('submit', (e) => {
-    e.preventDefault();
-
+    // Let Netlify handle the POST - just validate here if needed
     const formData = new FormData(form as HTMLFormElement);
-    const data = Object.fromEntries(formData.entries());
-
-    console.log('Registration data:', data);
-
-    // Show success message (you would typically send this to a server)
-    alert('Registration submitted successfully! You will receive a confirmation email shortly.');
+    console.log('Submitting registration to Netlify...');
   });
 
   // Intersection Observer for scroll animations
