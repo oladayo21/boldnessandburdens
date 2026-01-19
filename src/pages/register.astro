@@ -1,0 +1,690 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Register | BBC'26 - Boldness and Burdens Conference">
+  <main>
+    <!-- Header -->
+    <header class="page-header">
+      <div class="container container--narrow">
+        <a href="/" class="back-link">&larr; Back to info</a>
+        <h1 class="page-title animate-fade-in-up">Registration</h1>
+        <p class="page-subtitle animate-fade-in delay-1">Boldness & Burdens Conference 2026</p>
+        <div class="divider animate-fade-in delay-2"></div>
+      </div>
+    </header>
+
+    <!-- Registration Form -->
+    <section class="form-section">
+      <div class="container container--narrow">
+        <form id="registration-form" class="registration-form">
+
+          <!-- Section 1: Program Information -->
+          <div class="form-card animate-fade-in-up">
+            <div class="form-card-header">
+              <span class="section-number">01</span>
+              <h2>Program Information</h2>
+            </div>
+            <div class="form-card-body">
+              <div class="info-box">
+                <h3>What's Included</h3>
+                <ul>
+                  <li>Accommodation - provided <strong>free of charge</strong></li>
+                  <li>Feeding - provided <strong>free of charge</strong></li>
+                </ul>
+              </div>
+
+              <div class="info-box">
+                <h3>What to Bring</h3>
+                <p>Participants are required to bring their personal toiletries, including:</p>
+                <ul class="bring-list">
+                  <li>Towel</li>
+                  <li>Blanket</li>
+                  <li>Soap / shower gel</li>
+                  <li>Toothbrush & toothpaste</li>
+                  <li>Any personal hygiene items</li>
+                </ul>
+              </div>
+
+              <div class="acknowledgment-box">
+                <label class="form-check">
+                  <input type="checkbox" name="program_acknowledged" required />
+                  <span class="form-check-label">
+                    By proceeding with this registration, I confirm that I have read and understood the program details above.
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Participant Information -->
+          <div class="form-card animate-fade-in-up delay-1">
+            <div class="form-card-header">
+              <span class="section-number">02</span>
+              <h2>Participant Information</h2>
+            </div>
+            <div class="form-card-body">
+              <div class="form-group">
+                <label class="form-label" for="full_name">Full Name of Participant <span class="required">*</span></label>
+                <input
+                  type="text"
+                  id="full_name"
+                  name="full_name"
+                  class="form-input"
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="phone">Phone Number <span class="required">*</span></label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    class="form-input"
+                    placeholder="+49 XXX XXXXXXX"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="email">Email Address <span class="required">*</span></label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    class="form-input"
+                    placeholder="your@email.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Gender <span class="required">*</span></label>
+                  <div class="radio-group">
+                    <label class="form-check form-check--inline">
+                      <input type="radio" name="gender" value="female" required />
+                      <span class="form-check-label">Female</span>
+                    </label>
+                    <label class="form-check form-check--inline">
+                      <input type="radio" name="gender" value="male" />
+                      <span class="form-check-label">Male</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="city">City of Residence <span class="required">*</span></label>
+                  <input
+                    type="text"
+                    id="city"
+                    name="city"
+                    class="form-input"
+                    placeholder="e.g., Berlin"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Health & Safety -->
+          <div class="form-card animate-fade-in-up delay-2">
+            <div class="form-card-header">
+              <span class="section-number">03</span>
+              <h2>Health & Safety</h2>
+            </div>
+            <div class="form-card-body">
+              <div class="form-group">
+                <label class="form-label">Does the participant have any medical conditions we should be aware of? <span class="required">*</span></label>
+                <div class="conditional-field">
+                  <div class="radio-group">
+                    <label class="form-check form-check--inline">
+                      <input type="radio" name="has_medical_conditions" value="no" required data-toggle="medical_conditions_detail" data-hide />
+                      <span class="form-check-label">No</span>
+                    </label>
+                    <label class="form-check form-check--inline">
+                      <input type="radio" name="has_medical_conditions" value="yes" data-toggle="medical_conditions_detail" data-show />
+                      <span class="form-check-label">Yes</span>
+                    </label>
+                  </div>
+                  <div id="medical_conditions_detail" class="conditional-input hidden">
+                    <textarea
+                      name="medical_conditions"
+                      class="form-textarea"
+                      placeholder="Please specify any medical conditions..."
+                      rows="3"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Does the participant have any allergies (food, medication, etc.)? <span class="required">*</span></label>
+                <div class="conditional-field">
+                  <div class="radio-group">
+                    <label class="form-check form-check--inline">
+                      <input type="radio" name="has_allergies" value="no" required data-toggle="allergies_detail" data-hide />
+                      <span class="form-check-label">No</span>
+                    </label>
+                    <label class="form-check form-check--inline">
+                      <input type="radio" name="has_allergies" value="yes" data-toggle="allergies_detail" data-show />
+                      <span class="form-check-label">Yes</span>
+                    </label>
+                  </div>
+                  <div id="allergies_detail" class="conditional-input hidden">
+                    <textarea
+                      name="allergies"
+                      class="form-textarea"
+                      placeholder="Please specify any allergies..."
+                      rows="3"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="emergency_contact_name">Emergency Contact Name <span class="required">*</span></label>
+                  <input
+                    type="text"
+                    id="emergency_contact_name"
+                    name="emergency_contact_name"
+                    class="form-input"
+                    placeholder="Full name"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="emergency_contact_phone">Emergency Contact Phone <span class="required">*</span></label>
+                  <input
+                    type="tel"
+                    id="emergency_contact_phone"
+                    name="emergency_contact_phone"
+                    class="form-input"
+                    placeholder="+49 XXX XXXXXXX"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 4: Consent & Agreements -->
+          <div class="form-card animate-fade-in-up delay-3">
+            <div class="form-card-header">
+              <span class="section-number">04</span>
+              <h2>Consent & Agreements</h2>
+            </div>
+            <div class="form-card-body">
+              <div class="form-group">
+                <label class="form-label">Photo & Video Consent</label>
+                <label class="form-check">
+                  <input type="checkbox" name="photo_consent" required />
+                  <span class="form-check-label">
+                    I give permission for photos and videos to be taken and used for communication purposes.
+                  </span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Participation Consent</label>
+                <label class="form-check">
+                  <input type="checkbox" name="participation_consent" required />
+                  <span class="form-check-label">
+                    I confirm that the information provided is accurate and I give consent for participation in the Boldness and Burdens Summer Camp Meeting 2026.
+                  </span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="consent_date">Date <span class="required">*</span></label>
+                <input
+                  type="date"
+                  id="consent_date"
+                  name="consent_date"
+                  class="form-input"
+                  required
+                />
+              </div>
+
+              <div class="gdpr-notice">
+                <h4>Data Protection Notice</h4>
+                <p>
+                  All information provided will be treated confidentially and used solely for the purpose of organizing and safely conducting the Boldness and Burdens Summer Camp Meeting 2026, in accordance with GDPR regulations.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <div class="form-actions animate-fade-in-up delay-4">
+            <button type="submit" class="btn btn--primary btn--large">
+              <span>Complete Registration</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+            <p class="form-note">You will receive a confirmation email after submitting</p>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <p>BBC'26 - Boldness and Burdens Conference</p>
+          <a href="mailto:info@boldnessandburdens.com">info@boldnessandburdens.com</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+</BaseLayout>
+
+<style>
+  /* Page Header */
+  .page-header {
+    padding: var(--space-2xl) 0 var(--space-xl);
+    background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-cream-dark) 100%);
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .page-header {
+      padding: var(--space-3xl) 0 var(--space-2xl);
+    }
+  }
+
+  .back-link {
+    display: inline-block;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-charcoal-light);
+    margin-bottom: var(--space-xl);
+    transition: color var(--duration-normal) var(--ease-out);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent-dark);
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 400;
+    margin-bottom: var(--space-sm);
+  }
+
+  .page-subtitle {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--color-charcoal-light);
+    margin: 0;
+  }
+
+  .page-header .divider {
+    margin: var(--space-xl) auto 0;
+  }
+
+  /* Form Section */
+  .form-section {
+    padding: var(--space-2xl) 0;
+  }
+
+  @media (min-width: 768px) {
+    .form-section {
+      padding: var(--space-3xl) 0;
+    }
+  }
+
+  .registration-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  @media (min-width: 768px) {
+    .registration-form {
+      gap: var(--space-2xl);
+    }
+  }
+
+  /* Form Card */
+  .form-card {
+    background: var(--color-cream);
+    border: 1px solid var(--color-cream-dark);
+  }
+
+  .form-card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-cream-dark);
+  }
+
+  @media (min-width: 768px) {
+    .form-card-header {
+      padding: var(--space-lg) var(--space-xl);
+    }
+  }
+
+  .section-number {
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+
+  .form-card-header h2 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .form-card-body {
+    padding: var(--space-lg);
+  }
+
+  @media (min-width: 768px) {
+    .form-card-body {
+      padding: var(--space-xl);
+    }
+  }
+
+  /* Info Boxes */
+  .info-box {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-xl);
+    border-bottom: 1px solid var(--color-cream-dark);
+  }
+
+  .info-box:last-of-type {
+    border-bottom: none;
+    margin-bottom: var(--space-lg);
+    padding-bottom: 0;
+  }
+
+  .info-box h3 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+    color: var(--color-charcoal);
+  }
+
+  .info-box p {
+    font-size: 0.875rem;
+    color: var(--color-charcoal-light);
+  }
+
+  .info-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .info-box ul li {
+    position: relative;
+    padding-left: var(--space-lg);
+    margin-bottom: var(--space-sm);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .info-box ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 6px;
+    height: 1px;
+    background: var(--color-accent);
+  }
+
+  .info-box .bring-list {
+    columns: 2;
+    column-gap: var(--space-xl);
+  }
+
+  @media (max-width: 480px) {
+    .info-box .bring-list {
+      columns: 1;
+    }
+  }
+
+  .acknowledgment-box {
+    background: var(--color-cream-dark);
+    padding: var(--space-lg);
+    margin-top: var(--space-lg);
+  }
+
+  .acknowledgment-box .form-check {
+    margin-bottom: 0;
+  }
+
+  /* Form Rows */
+  .form-row {
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 600px) {
+    .form-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* Radio Group */
+  .radio-group {
+    display: flex;
+    gap: var(--space-xl);
+  }
+
+  .form-check--inline {
+    margin-bottom: 0;
+  }
+
+  /* Conditional Fields */
+  .conditional-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .conditional-input {
+    overflow: hidden;
+    transition: all var(--duration-normal) var(--ease-out);
+  }
+
+  .conditional-input.hidden {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+  }
+
+  .conditional-input:not(.hidden) {
+    max-height: 200px;
+    opacity: 1;
+  }
+
+  /* GDPR Notice */
+  .gdpr-notice {
+    background: var(--color-cream-dark);
+    padding: var(--space-lg);
+    margin-top: var(--space-lg);
+  }
+
+  .gdpr-notice h4 {
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0 0 var(--space-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .gdpr-notice p {
+    font-size: 0.8125rem;
+    color: var(--color-charcoal-light);
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  /* Form Actions */
+  .form-actions {
+    text-align: center;
+    padding-top: var(--space-lg);
+  }
+
+  .btn--large {
+    padding: var(--space-lg) var(--space-2xl);
+    font-size: 0.9375rem;
+  }
+
+  .btn--large svg {
+    transition: transform var(--duration-normal) var(--ease-out);
+  }
+
+  .btn--large:hover svg {
+    transform: translateX(4px);
+  }
+
+  .form-note {
+    font-size: 0.75rem;
+    color: var(--color-charcoal-light);
+    margin-top: var(--space-md);
+  }
+
+  /* Footer */
+  .footer {
+    background: var(--color-charcoal);
+    color: var(--color-cream);
+    padding: var(--space-xl) 0;
+    margin-top: var(--space-2xl);
+  }
+
+  .footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    text-align: center;
+  }
+
+  @media (min-width: 600px) {
+    .footer-content {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  .footer-content p {
+    font-size: 0.8125rem;
+    color: rgba(250, 248, 245, 0.6);
+    margin: 0;
+  }
+
+  .footer-content a {
+    font-size: 0.8125rem;
+    color: var(--color-cream);
+  }
+
+  .footer-content a:hover {
+    color: var(--color-accent);
+  }
+
+  /* Required field indicator */
+  .required {
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+
+  /* Form validation states */
+  .form-input:invalid:not(:placeholder-shown),
+  .form-textarea:invalid:not(:placeholder-shown) {
+    border-color: var(--color-error);
+  }
+
+  .form-input:valid:not(:placeholder-shown),
+  .form-textarea:valid:not(:placeholder-shown) {
+    border-color: var(--color-success);
+  }
+</style>
+
+<script>
+  // Set today's date as default
+  const dateInput = document.getElementById('consent_date') as HTMLInputElement;
+
+  if (dateInput) {
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+  }
+
+  // Conditional field toggles
+  document.querySelectorAll('[data-toggle]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      const target = (e.target as HTMLInputElement);
+      const toggleId = target.dataset.toggle;
+      const element = document.getElementById(toggleId!);
+
+      if (!element) return;
+
+      if (target.dataset.show !== undefined) {
+        element.classList.remove('hidden');
+        const textarea = element.querySelector('textarea');
+
+        if (textarea) textarea.required = true;
+      } else if (target.dataset.hide !== undefined) {
+        element.classList.add('hidden');
+        const textarea = element.querySelector('textarea');
+
+        if (textarea) {
+          textarea.required = false;
+          textarea.value = '';
+        }
+      }
+    });
+  });
+
+  // Form submission
+  const form = document.getElementById('registration-form');
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form as HTMLFormElement);
+    const data = Object.fromEntries(formData.entries());
+
+    console.log('Registration data:', data);
+
+    // Show success message (you would typically send this to a server)
+    alert('Registration submitted successfully! You will receive a confirmation email shortly.');
+  });
+
+  // Intersection Observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('[class*="animate-"]').forEach(el => {
+    observer.observe(el);
+  });
+</script>

@@ -1,16 +1,530 @@
 ---
-
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="BBC'26 - School of the Spirit | Boldness and Burdens Conference">
+  <main>
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="hero-image">
+        <img
+          src="https://images.unsplash.com/photo-1507692049790-de58290a4334?w=800&q=80"
+          alt="Hands raised in worship and prayer"
+          loading="eager"
+        />
+      </div>
+      <div class="hero-content">
+        <div class="logo">
+          <span class="logo-text">BBC</span>
+          <span class="logo-year">'26</span>
+        </div>
+        <h1 class="hero-title">
+          Boldness<br/>
+          <span class="hero-amp">&</span><br/>
+          Burdens
+        </h1>
+        <p class="hero-subtitle">Conference 2026</p>
+        <p class="hero-theme">School of the Spirit</p>
+        <p class="hero-tagline">
+          A transformative summer camp designed to equip young people
+          with godly courage, faith and clarity to face life's challenges.
+        </p>
+        <a href="/register" class="btn btn--primary hero-cta">Register Now</a>
+      </div>
+    </header>
+
+    <!-- Details Section -->
+    <section class="details">
+      <div class="container">
+        <div class="details-grid">
+          <div class="detail-card animate-fade-in-up">
+            <span class="detail-label">When</span>
+            <h3 class="detail-value">July 16-19</h3>
+            <p class="detail-sub">2026</p>
+          </div>
+          <div class="detail-card animate-fade-in-up delay-1">
+            <span class="detail-label">Where</span>
+            <h3 class="detail-value">Berlin-Grunewald</h3>
+            <p class="detail-sub">KJFE, Chance<br/>Teufelsseechaussee 17<br/>14193 Berlin</p>
+          </div>
+          <div class="detail-card animate-fade-in-up delay-2">
+            <span class="detail-label">Duration</span>
+            <h3 class="detail-value">3 Nights</h3>
+            <p class="detail-sub">1 Conference</p>
+          </div>
+          <div class="detail-card animate-fade-in-up delay-3">
+            <span class="detail-label">Cost</span>
+            <h3 class="detail-value">Free</h3>
+            <p class="detail-sub">Registration required</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section class="experience">
+      <div class="container container--narrow">
+        <h2 class="section-title">The Experience</h2>
+        <div class="divider"></div>
+        <div class="experience-items">
+          <div class="experience-item">
+            <span class="experience-icon">+</span>
+            <span>Prayer</span>
+          </div>
+          <div class="experience-item">
+            <span class="experience-icon">+</span>
+            <span>Worship</span>
+          </div>
+          <div class="experience-item">
+            <span class="experience-icon">+</span>
+            <span>Fellowship</span>
+          </div>
+          <div class="experience-item">
+            <span class="experience-icon">+</span>
+            <span>Diverse Encounters</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What's Included Section -->
+    <section class="included">
+      <div class="container">
+        <div class="included-grid">
+          <div class="included-text">
+            <h2 class="section-title">What's Included</h2>
+            <div class="divider"></div>
+            <ul class="included-list">
+              <li>
+                <strong>Accommodation</strong>
+                <span>Provided free of charge</span>
+              </li>
+              <li>
+                <strong>Feeding</strong>
+                <span>Provided free of charge</span>
+              </li>
+            </ul>
+          </div>
+          <div class="included-bring">
+            <h3>What to Bring</h3>
+            <p class="bring-intro">Please bring your personal toiletries:</p>
+            <ul class="bring-list">
+              <li>Towel</li>
+              <li>Blanket</li>
+              <li>Soap / shower gel</li>
+              <li>Toothbrush & toothpaste</li>
+              <li>Any personal hygiene items</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-info">
+            <p class="footer-title">BBC'26</p>
+            <p>Boldness and Burdens Conference</p>
+          </div>
+          <div class="footer-contact">
+            <p class="contact-label">Enquiries</p>
+            <a href="mailto:info@boldnessandburdens.com">info@boldnessandburdens.com</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>2026 Boldness and Burdens Conference</p>
+        </div>
+      </div>
+    </footer>
+  </main>
+</BaseLayout>
+
+<style>
+  /* Hero Section - Split Layout */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr;
+    background: var(--color-cream);
+  }
+
+  .hero-image {
+    height: 40vh;
+    min-height: 280px;
+    overflow: hidden;
+  }
+
+  .hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--space-xl) var(--space-lg);
+    min-height: 60vh;
+  }
+
+  .logo {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    margin-bottom: var(--space-xl);
+  }
+
+  .logo-text {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--color-charcoal);
+  }
+
+  .logo-year {
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-style: italic;
+    color: var(--color-accent);
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-image {
+      height: 100vh;
+      position: sticky;
+      top: 0;
+    }
+
+    .hero-content {
+      padding: var(--space-4xl);
+      min-height: 100vh;
+    }
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 400;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    margin-bottom: var(--space-md);
+  }
+
+  .hero-amp {
+    color: var(--color-accent);
+    font-size: 0.5em;
+    font-weight: 400;
+  }
+
+  .hero-subtitle {
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-charcoal-light);
+    margin-bottom: var(--space-xl);
+  }
+
+  .hero .divider {
+    margin: var(--space-xl) auto;
+  }
+
+  .hero-theme {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-style: italic;
+    color: var(--color-charcoal);
+    margin-bottom: var(--space-lg);
+  }
+
+  .hero-tagline {
+    font-size: 0.9375rem;
+    color: var(--color-charcoal-light);
+    line-height: 1.8;
+    max-width: 400px;
+    margin: 0;
+  }
+
+  .hero-cta {
+    margin-top: var(--space-xl);
+    align-self: flex-start;
+  }
+
+  @media (max-width: 480px) {
+    .hero-cta {
+      width: 100%;
+      text-align: center;
+    }
+  }
+
+  /* Details Section */
+  .details {
+    background: var(--color-charcoal);
+    color: var(--color-cream);
+    padding: var(--space-3xl) 0;
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2xl);
+  }
+
+  @media (min-width: 768px) {
+    .details-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .detail-card {
+    text-align: center;
+  }
+
+  .detail-label {
+    display: block;
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-sm);
+  }
+
+  .detail-value {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+    font-weight: 400;
+    margin-bottom: var(--space-xs);
+    color: var(--color-cream);
+  }
+
+  .detail-sub {
+    font-size: 0.8125rem;
+    color: rgba(250, 248, 245, 0.6);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Experience Section */
+  .experience {
+    text-align: center;
+    padding: var(--space-4xl) 0;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 400;
+  }
+
+  .experience .divider {
+    margin: var(--space-lg) auto var(--space-2xl);
+  }
+
+  .experience-items {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  @media (min-width: 600px) {
+    .experience-items {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-lg) var(--space-2xl);
+    }
+  }
+
+  .experience-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-style: italic;
+  }
+
+  .experience-icon {
+    color: var(--color-accent);
+    font-style: normal;
+  }
+
+  /* Included Section */
+  .included {
+    background: var(--color-cream-dark);
+    padding: var(--space-4xl) 0;
+  }
+
+  .included-grid {
+    display: grid;
+    gap: var(--space-3xl);
+  }
+
+  @media (min-width: 768px) {
+    .included-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4xl);
+    }
+  }
+
+  .included-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .included-list li {
+    padding: var(--space-lg) 0;
+    border-bottom: 1px solid rgba(42, 40, 38, 0.1);
+  }
+
+  .included-list li:last-child {
+    border-bottom: none;
+  }
+
+  .included-list strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: var(--space-xs);
+  }
+
+  .included-list span {
+    font-size: 0.875rem;
+    color: var(--color-charcoal-light);
+  }
+
+  .included-bring h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: var(--space-md);
+  }
+
+  .bring-intro {
+    font-size: 0.875rem;
+    color: var(--color-charcoal-light);
+    margin-bottom: var(--space-md);
+  }
+
+  .bring-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .bring-list li {
+    position: relative;
+    padding-left: var(--space-lg);
+    margin-bottom: var(--space-sm);
+    font-size: 0.9375rem;
+  }
+
+  .bring-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 6px;
+    height: 1px;
+    background: var(--color-accent);
+  }
+
+  /* Footer */
+  .footer {
+    background: var(--color-charcoal);
+    color: var(--color-cream);
+    padding: var(--space-3xl) 0 var(--space-xl);
+  }
+
+  .footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
+    padding-bottom: var(--space-2xl);
+    border-bottom: 1px solid rgba(250, 248, 245, 0.1);
+  }
+
+  @media (min-width: 768px) {
+    .footer-content {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  .footer-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin-bottom: var(--space-sm);
+  }
+
+  .footer-info p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: rgba(250, 248, 245, 0.6);
+  }
+
+  .footer-info p:first-child {
+    color: var(--color-cream);
+  }
+
+  .contact-label {
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-xs);
+  }
+
+  .footer-contact a {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--color-cream);
+  }
+
+  .footer-contact a:hover {
+    color: var(--color-accent);
+  }
+
+  .footer-bottom {
+    padding-top: var(--space-xl);
+    text-align: center;
+  }
+
+  .footer-bottom p {
+    font-size: 0.75rem;
+    color: rgba(250, 248, 245, 0.4);
+    margin: 0;
+  }
+</style>
+
+<script>
+  // Intersection Observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('[class*="animate-"]').forEach(el => {
+    observer.observe(el);
+  });
+</script>
