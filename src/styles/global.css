@@ -57,6 +57,12 @@ body {
   background-color: var(--color-cream);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* Subtle grain texture overlay */
@@ -112,7 +118,19 @@ a:hover {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 var(--space-lg);
+  padding: 0 var(--space-md);
+}
+
+@media (min-width: 480px) {
+  .container {
+    padding: 0 var(--space-lg);
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 var(--space-xl);
+  }
 }
 
 .container--narrow {
@@ -121,7 +139,13 @@ a:hover {
 
 /* Section styling */
 section {
-  padding: var(--space-2xl) 0;
+  padding: var(--space-xl) 0;
+}
+
+@media (min-width: 480px) {
+  section {
+    padding: var(--space-2xl) 0;
+  }
 }
 
 @media (min-width: 768px) {
@@ -145,6 +169,7 @@ section {
   justify-content: center;
   gap: var(--space-sm);
   padding: var(--space-md) var(--space-xl);
+  min-height: 44px; /* Touch target minimum */
   font-family: var(--font-body);
   font-size: 0.875rem;
   font-weight: 500;
@@ -155,6 +180,7 @@ section {
   border-radius: 0;
   cursor: pointer;
   transition: all var(--duration-normal) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn--primary {
@@ -198,13 +224,16 @@ section {
 .form-textarea {
   width: 100%;
   padding: var(--space-md);
+  min-height: 48px; /* Touch target for inputs */
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 1rem; /* Prevents iOS zoom on focus */
   color: var(--color-charcoal);
   background: var(--color-cream);
   border: 1px solid var(--color-charcoal-light);
   border-radius: 0;
   transition: border-color var(--duration-normal) var(--ease-out);
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .form-input:focus,
@@ -231,18 +260,20 @@ section {
   gap: var(--space-md);
   cursor: pointer;
   margin-bottom: var(--space-md);
+  min-height: 44px; /* Touch target */
+  padding: var(--space-xs) 0;
 }
 
 .form-check input[type="checkbox"],
 .form-check input[type="radio"] {
   appearance: none;
-  width: 20px;
-  height: 20px;
-  min-width: 20px;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
   border: 1px solid var(--color-charcoal-light);
   background: var(--color-cream);
   cursor: pointer;
-  margin-top: 2px;
+  margin-top: 0;
   transition: all var(--duration-normal) var(--ease-out);
 }
 
@@ -259,22 +290,22 @@ section {
 .form-check input[type="checkbox"]:checked::after {
   content: '';
   display: block;
-  width: 6px;
-  height: 10px;
+  width: 7px;
+  height: 12px;
   border: solid var(--color-cream);
   border-width: 0 2px 2px 0;
-  transform: rotate(45deg) translate(-1px, -1px);
-  margin: 2px auto;
+  transform: rotate(45deg);
+  margin: 3px auto 0;
 }
 
 .form-check input[type="radio"]:checked::after {
   content: '';
   display: block;
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   background: var(--color-cream);
   border-radius: 50%;
-  margin: 5px auto;
+  margin: 6px auto;
 }
 
 .form-check-label {

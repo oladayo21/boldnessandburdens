@@ -44,7 +44,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <h3>What's Included</h3>
                 <ul>
                   <li>Accommodation - provided <strong>free of charge</strong></li>
-                  <li>Feeding - provided <strong>free of charge</strong></li>
+                  <li>Meals - One meal per day will be provided. Participants are welcome to bring their own snacks and additional food items.</li>
                 </ul>
               </div>
 
@@ -383,9 +383,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .form-card-header {
     display: flex;
     align-items: center;
-    gap: var(--space-md);
-    padding: var(--space-md) var(--space-lg);
+    gap: var(--space-sm);
+    padding: var(--space-md);
     border-bottom: 1px solid var(--color-cream-dark);
+  }
+
+  @media (min-width: 480px) {
+    .form-card-header {
+      gap: var(--space-md);
+      padding: var(--space-md) var(--space-lg);
+    }
   }
 
   @media (min-width: 768px) {
@@ -409,7 +416,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .form-card-body {
-    padding: var(--space-lg);
+    padding: var(--space-md);
+  }
+
+  @media (min-width: 480px) {
+    .form-card-body {
+      padding: var(--space-lg);
+    }
   }
 
   @media (min-width: 768px) {
@@ -504,11 +517,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   /* Radio Group */
   .radio-group {
     display: flex;
-    gap: var(--space-xl);
+    flex-wrap: wrap;
+    gap: var(--space-md) var(--space-xl);
   }
 
   .form-check--inline {
     margin-bottom: 0;
+    min-width: 80px;
   }
 
   /* Conditional Fields */
@@ -564,8 +579,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .btn--large {
-    padding: var(--space-lg) var(--space-2xl);
-    font-size: 0.9375rem;
+    width: 100%;
+    padding: var(--space-lg) var(--space-xl);
+    font-size: 0.875rem;
+  }
+
+  @media (min-width: 480px) {
+    .btn--large {
+      width: auto;
+      padding: var(--space-lg) var(--space-2xl);
+      font-size: 0.9375rem;
+    }
   }
 
   .btn--large svg {

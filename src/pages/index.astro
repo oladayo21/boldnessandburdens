@@ -53,7 +53,7 @@ const eventJsonLd = {
           loading="eager"
         />
       </div>
-      <div class="hero-content">
+      <div class="hero-content animate-fade-in">
         <div class="logo">
           <span class="logo-text">BBC</span>
           <span class="logo-year">'26</span>
@@ -73,29 +73,109 @@ const eventJsonLd = {
       </div>
     </header>
 
+    <!-- Countdown Section -->
+    <section class="countdown-section">
+      <div class="container">
+        <div class="countdown" id="countdown">
+          <div class="countdown-item">
+            <span class="countdown-value" id="days">---</span>
+            <span class="countdown-label">Days</span>
+          </div>
+          <div class="countdown-item">
+            <span class="countdown-value" id="hours">--</span>
+            <span class="countdown-label">Hours</span>
+          </div>
+          <div class="countdown-item">
+            <span class="countdown-value" id="minutes">--</span>
+            <span class="countdown-label">Minutes</span>
+          </div>
+          <div class="countdown-item">
+            <span class="countdown-value" id="seconds">--</span>
+            <span class="countdown-label">Seconds</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vision Section -->
+    <section class="vision">
+      <div class="container container--narrow">
+        <h2 class="section-title">Time for Boldness & Burdens Conference 2026</h2>
+        <div class="divider"></div>
+        <p class="vision-intro">
+          There are special times and seasons. Moments God sets apart for encounter,
+          alignment, and renewal. Boldness & Burdens Conference is a gathering set apart
+          for young people, individuals, and families who desire more of God.
+        </p>
+        <blockquote class="vision-highlight">
+          <p>This is a School of the Spirit.</p>
+          <p>A place of prayer, teaching, waiting, and encounter.</p>
+        </blockquote>
+        <h3 class="vision-subheading">What to Expect</h3>
+        <ul class="vision-list">
+          <li>Extended times of prayer</li>
+          <li>Worship and spiritual songs</li>
+          <li>Teaching and impartation</li>
+          <li>Space for God to move supernaturally</li>
+          <li>Moments of personal encounter and renewal</li>
+        </ul>
+        <p class="vision-closing">
+          This is a time to lay down burdens and receive boldness.
+        </p>
+        <p class="vision-cta">
+          <strong>Pray. Plan. Prepare. Invite a friend. Come expectant.</strong>
+        </p>
+      </div>
+    </section>
+
     <!-- Details Section -->
     <section class="details">
       <div class="container">
         <div class="details-grid">
           <div class="detail-card animate-fade-in-up">
-            <span class="detail-label">When</span>
-            <h3 class="detail-value">July 16-19</h3>
-            <p class="detail-sub">2026</p>
+            <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <path d="M16 2v4M8 2v4M3 10h18"/>
+              <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
+            </svg>
+            <div class="detail-text">
+              <span class="detail-label">When</span>
+              <h3 class="detail-value">July 16-19</h3>
+              <p class="detail-sub">2026</p>
+            </div>
           </div>
           <div class="detail-card animate-fade-in-up delay-1">
-            <span class="detail-label">Where</span>
-            <h3 class="detail-value">Berlin-Grunewald</h3>
-            <p class="detail-sub">KJFE, Chance<br/>Teufelsseechaussee 17<br/>14193 Berlin</p>
+            <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+              <circle cx="12" cy="9" r="2.5"/>
+            </svg>
+            <div class="detail-text">
+              <span class="detail-label">Where</span>
+              <h3 class="detail-value">Berlin-Grunewald</h3>
+              <p class="detail-sub">KJFE, Chance<br/>Teufelsseechaussee 17<br/>14193 Berlin</p>
+            </div>
           </div>
           <div class="detail-card animate-fade-in-up delay-2">
-            <span class="detail-label">Duration</span>
-            <h3 class="detail-value">3 Nights</h3>
-            <p class="detail-sub">1 Conference</p>
+            <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>
+            </svg>
+            <div class="detail-text">
+              <span class="detail-label">Duration</span>
+              <h3 class="detail-value">3 Nights</h3>
+              <p class="detail-sub">1 Conference</p>
+            </div>
           </div>
           <div class="detail-card animate-fade-in-up delay-3">
-            <span class="detail-label">Cost</span>
-            <h3 class="detail-value">Free</h3>
-            <p class="detail-sub">Registration required</p>
+            <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"/>
+              <path d="M12 3v12M12 3l4 4M12 3 8 7"/>
+              <rect x="2" y="9" width="20" height="5" rx="1"/>
+            </svg>
+            <div class="detail-text">
+              <span class="detail-label">Cost</span>
+              <h3 class="detail-value">Free</h3>
+              <p class="detail-sub">Registration required</p>
+            </div>
           </div>
         </div>
       </div>
@@ -103,25 +183,42 @@ const eventJsonLd = {
 
     <!-- Experience Section -->
     <section class="experience">
-      <div class="container container--narrow">
+      <div class="container">
         <h2 class="section-title">The Experience</h2>
         <div class="divider"></div>
-        <div class="experience-items">
-          <div class="experience-item">
-            <span class="experience-icon">+</span>
-            <span>Prayer</span>
+        <div class="experience-grid">
+          <div class="experience-card">
+            <svg class="experience-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 5c-1.5-2-4-2.5-6-1s-2.5 4.5-1 7c1 1.5 7 7 7 7s6-5.5 7-7c1.5-2.5 1-5.5-1-7s-4.5-1-6 1z"/>
+              <path d="M12 5v4M10 7h4"/>
+            </svg>
+            <h3>Prayer</h3>
+            <p>Extended times of personal and corporate prayer</p>
           </div>
-          <div class="experience-item">
-            <span class="experience-icon">+</span>
-            <span>Worship</span>
+          <div class="experience-card">
+            <svg class="experience-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+            </svg>
+            <h3>Worship</h3>
+            <p>Spirit-led worship and spiritual songs</p>
           </div>
-          <div class="experience-item">
-            <span class="experience-icon">+</span>
-            <span>Fellowship</span>
+          <div class="experience-card">
+            <svg class="experience-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+              <circle cx="17" cy="10" r="3"/>
+              <path d="M21 21v-1.5a3 3 0 0 0-3-3h-1"/>
+            </svg>
+            <h3>Fellowship</h3>
+            <p>Connect with like-minded believers</p>
           </div>
-          <div class="experience-item">
-            <span class="experience-icon">+</span>
-            <span>Diverse Encounters</span>
+          <div class="experience-card">
+            <svg class="experience-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+            </svg>
+            <h3>Encounters</h3>
+            <p>Space for God to move supernaturally</p>
           </div>
         </div>
       </div>
@@ -140,8 +237,8 @@ const eventJsonLd = {
                 <span>Provided free of charge</span>
               </li>
               <li>
-                <strong>Feeding</strong>
-                <span>Provided free of charge</span>
+                <strong>Meals</strong>
+                <span>One meal per day provided. Bring your own snacks if needed</span>
               </li>
             </ul>
           </div>
@@ -163,6 +260,10 @@ const eventJsonLd = {
     <!-- Footer -->
     <footer class="footer">
       <div class="container">
+        <div class="footer-cta">
+          <p class="footer-cta-text">Register now to join other young believers to experience times of refreshing!</p>
+          <a href="/register" class="btn btn--primary">Register Now</a>
+        </div>
         <div class="footer-content">
           <div class="footer-info">
             <p class="footer-title">BBC'26</p>
@@ -200,6 +301,7 @@ const eventJsonLd = {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 30%;
   }
 
   .hero-content {
@@ -305,6 +407,165 @@ const eventJsonLd = {
     }
   }
 
+  /* Countdown Section */
+  .countdown-section {
+    background: var(--color-cream-dark);
+    padding: var(--space-lg) 0;
+  }
+
+  @media (min-width: 600px) {
+    .countdown-section {
+      padding: var(--space-2xl) 0;
+    }
+  }
+
+  .countdown {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 600px) {
+    .countdown {
+      gap: var(--space-2xl);
+    }
+  }
+
+  .countdown-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .countdown-value {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 6vw, 3rem);
+    font-weight: 400;
+    color: var(--color-accent-dark);
+    line-height: 1;
+  }
+
+  .countdown-label {
+    font-size: 0.5rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-charcoal-light);
+    margin-top: var(--space-xs);
+  }
+
+  @media (min-width: 600px) {
+    .countdown-label {
+      font-size: 0.625rem;
+      letter-spacing: 0.2em;
+      margin-top: var(--space-sm);
+    }
+  }
+
+  /* Vision Section */
+  .vision {
+    padding: var(--space-3xl) 0;
+  }
+
+  .vision .section-title {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    margin-bottom: var(--space-md);
+    text-align: center;
+  }
+
+  .vision .divider {
+    margin: 0 auto var(--space-xl);
+  }
+
+  .vision-intro {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--color-charcoal-light);
+    margin-bottom: var(--space-xl);
+  }
+
+  .vision-highlight {
+    text-align: center;
+    margin: var(--space-2xl) 0;
+    padding: var(--space-xl) 0;
+  }
+
+  .vision-highlight p {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--color-charcoal);
+    margin: 0;
+  }
+
+  .vision-highlight p:first-child {
+    margin-bottom: var(--space-sm);
+  }
+
+  .vision-highlight p:first-child::before {
+    content: '"';
+    color: var(--color-accent);
+  }
+
+  .vision-highlight p:last-child::after {
+    content: '"';
+    color: var(--color-accent);
+  }
+
+  .vision-subheading {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+    color: var(--color-charcoal);
+  }
+
+  .vision-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-xl);
+  }
+
+  .vision-list li {
+    position: relative;
+    padding-left: var(--space-lg);
+    margin-bottom: var(--space-sm);
+    font-size: 0.9375rem;
+    color: var(--color-charcoal-light);
+  }
+
+  .vision-list li::before {
+    content: '+';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+
+  .vision-closing {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-style: italic;
+    color: var(--color-charcoal);
+    margin-bottom: var(--space-md);
+  }
+
+  .vision-cta {
+    font-size: 0.9375rem;
+    color: var(--color-charcoal);
+    margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    .vision {
+      padding: var(--space-4xl) 0;
+    }
+
+    .vision-intro {
+      font-size: 1.0625rem;
+    }
+  }
+
   /* Details Section */
   .details {
     background: var(--color-charcoal);
@@ -314,94 +575,219 @@ const eventJsonLd = {
 
   .details-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-2xl);
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 600px) {
+    .details-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-xl);
+    }
+  }
+
+  @media (min-width: 900px) {
     .details-grid {
       grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-2xl);
     }
   }
 
   .detail-card {
-    text-align: center;
-  }
-
-  .detail-label {
-    display: block;
-    font-size: 0.625rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    margin-bottom: var(--space-sm);
-  }
-
-  .detail-value {
-    font-family: var(--font-display);
-    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
-    font-weight: 400;
-    margin-bottom: var(--space-xs);
-    color: var(--color-cream);
-  }
-
-  .detail-sub {
-    font-size: 0.8125rem;
-    color: rgba(250, 248, 245, 0.6);
-    margin: 0;
-    line-height: 1.6;
-  }
-
-  /* Experience Section */
-  .experience {
-    text-align: center;
-    padding: var(--space-4xl) 0;
-  }
-
-  .section-title {
-    font-family: var(--font-display);
-    font-size: clamp(1.75rem, 4vw, 2.25rem);
-    font-weight: 400;
-  }
-
-  .experience .divider {
-    margin: var(--space-lg) auto var(--space-2xl);
-  }
-
-  .experience-items {
     display: flex;
-    flex-direction: column;
     align-items: center;
     gap: var(--space-md);
   }
 
-  @media (min-width: 600px) {
-    .experience-items {
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: var(--space-lg) var(--space-2xl);
+  @media (min-width: 900px) {
+    .detail-card {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0;
     }
   }
 
-  .experience-item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
+  .detail-icon {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    color: var(--color-accent);
+  }
+
+  @media (min-width: 900px) {
+    .detail-icon {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      margin-bottom: var(--space-md);
+    }
+  }
+
+  .detail-text {
+    flex: 1;
+  }
+
+  @media (min-width: 900px) {
+    .detail-text {
+      text-align: center;
+    }
+  }
+
+  .detail-label {
+    display: block;
+    font-size: 0.5rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-xs);
+  }
+
+  @media (min-width: 768px) {
+    .detail-label {
+      font-size: 0.625rem;
+      letter-spacing: 0.2em;
+      margin-bottom: var(--space-sm);
+    }
+  }
+
+  .detail-value {
     font-family: var(--font-display);
-    font-size: 1.125rem;
-    font-style: italic;
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 2px;
+    color: var(--color-cream);
+  }
+
+  @media (min-width: 768px) {
+    .detail-value {
+      font-size: clamp(1.125rem, 2vw, 1.375rem);
+      margin-bottom: var(--space-xs);
+    }
+  }
+
+  .detail-sub {
+    font-size: 0.75rem;
+    color: rgba(250, 248, 245, 0.6);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  @media (min-width: 768px) {
+    .detail-sub {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+    }
+  }
+
+  /* Experience Section */
+  .experience {
+    padding: var(--space-3xl) 0;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 400;
+    text-align: center;
+  }
+
+  .experience .divider {
+    margin: var(--space-md) auto var(--space-xl);
+  }
+
+  @media (min-width: 768px) {
+    .experience .divider {
+      margin: var(--space-lg) auto var(--space-2xl);
+    }
+  }
+
+  .experience-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 480px) {
+    .experience-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 900px) {
+    .experience-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-xl);
+    }
+  }
+
+  .experience-card {
+    padding: var(--space-lg);
+    background: var(--color-cream-dark);
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .experience-card {
+      padding: var(--space-xl) var(--space-lg);
+    }
   }
 
   .experience-icon {
+    width: 32px;
+    height: 32px;
     color: var(--color-accent);
-    font-style: normal;
+    margin: 0 auto var(--space-sm);
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    .experience-icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: var(--space-md);
+    }
+  }
+
+  .experience-card h3 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: var(--space-xs);
+  }
+
+  @media (min-width: 768px) {
+    .experience-card h3 {
+      font-size: 1.125rem;
+      margin-bottom: var(--space-sm);
+    }
+  }
+
+  .experience-card p {
+    font-size: 0.8125rem;
+    color: var(--color-charcoal-light);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  @media (min-width: 768px) {
+    .experience {
+      padding: var(--space-4xl) 0;
+    }
   }
 
   /* Included Section */
   .included {
     background: var(--color-cream-dark);
     padding: var(--space-4xl) 0;
+  }
+
+  .included-text .section-title {
+    text-align: left;
+  }
+
+  .included-text .divider {
+    margin: var(--space-md) 0 var(--space-xl);
   }
 
   .included-grid {
@@ -487,6 +873,30 @@ const eventJsonLd = {
     padding: var(--space-3xl) 0 var(--space-xl);
   }
 
+  .footer-cta {
+    text-align: center;
+    padding-bottom: var(--space-2xl);
+    margin-bottom: var(--space-2xl);
+    border-bottom: 1px solid rgba(250, 248, 245, 0.1);
+  }
+
+  .footer-cta-text {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-style: italic;
+    margin: 0 0 var(--space-lg);
+    color: var(--color-cream);
+  }
+
+  .footer-cta .btn--primary {
+    background: var(--color-accent);
+    color: var(--color-charcoal);
+  }
+
+  .footer-cta .btn--primary:hover {
+    background: var(--color-accent-light);
+  }
+
   .footer-content {
     display: flex;
     flex-direction: column;
@@ -549,6 +959,35 @@ const eventJsonLd = {
 </style>
 
 <script>
+  // Countdown Timer - July 16, 2026
+  function updateCountdown() {
+    const eventDate = new Date('2026-07-16T09:00:00').getTime();
+    const now = new Date().getTime();
+    const diff = eventDate - now;
+
+    if (diff <= 0) {
+      document.getElementById('days')!.textContent = '0';
+      document.getElementById('hours')!.textContent = '0';
+      document.getElementById('minutes')!.textContent = '0';
+      document.getElementById('seconds')!.textContent = '0';
+
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    document.getElementById('days')!.textContent = String(days);
+    document.getElementById('hours')!.textContent = String(hours).padStart(2, '0');
+    document.getElementById('minutes')!.textContent = String(minutes).padStart(2, '0');
+    document.getElementById('seconds')!.textContent = String(seconds).padStart(2, '0');
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
   // Intersection Observer for scroll animations
   const observerOptions = {
     threshold: 0.1,
