@@ -31,6 +31,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           action="/success"
         >
           <input type="hidden" name="form-name" value="registration" />
+          <input type="hidden" name="subject" id="form-subject" />
           <p class="honeypot"><label>Don't fill this out: <input name="bot-field" /></label></p>
 
           <!-- Section 1: Program Information -->
@@ -701,9 +702,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   const form = document.getElementById('registration-form');
 
   form?.addEventListener('submit', (e) => {
-    // Let Netlify handle the POST - just validate here if needed
-    const formData = new FormData(form as HTMLFormElement);
-    console.log('Submitting registration to Netlify...');
+    const nameInput = document.getElementById('full_name') as HTMLInputElement;
+    const subjectInput = document.getElementById('form-subject') as HTMLInputElement;
+
+    if (nameInput && subjectInput) {
+      subjectInput.value = `Registration: ${nameInput.value}`;
+    }
   });
 
   // Intersection Observer for scroll animations
