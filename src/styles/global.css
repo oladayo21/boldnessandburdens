@@ -6,14 +6,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Outfit:wght@300;400;500&display=swap');
 
 :root {
-  /* Warm, earthy palette */
-  --color-cream: #faf8f5;
-  --color-cream-dark: #f0ede8;
-  --color-charcoal: #2a2826;
-  --color-charcoal-light: #4a4745;
-  --color-accent: #b8956c;
-  --color-accent-light: #d4b896;
-  --color-accent-dark: #8a6d4e;
+  /* Palette derived from flyer - warm amber/burnt orange */
+  --color-cream: #faf6f0;
+  --color-cream-dark: #efe8dc;
+  --color-charcoal: #1e1610;
+  --color-charcoal-light: #4a3f35;
+  --color-accent: #d4873a;
+  --color-accent-light: #e6a85c;
+  --color-accent-dark: #a86520;
   --color-sage: #7a8b7a;
   --color-error: #c45c5c;
   --color-success: #5c8a6e;

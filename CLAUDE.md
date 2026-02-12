@@ -32,15 +32,15 @@ src/
 ## Design System
 
 - **Fonts**: Fraunces (display), Outfit (body)
-- **Colors**: Warm cream background, charcoal text, gold accent (#b8956c)
+- **Colors**: Warm cream bg, deep brown text, burnt orange accent (#d4873a) - derived from flyer
 - **Approach**: Minimalist, mobile-first responsive
 
 ## Key Variables
 
 ```css
---color-cream: #faf8f5
---color-charcoal: #2a2826
---color-accent: #b8956c
+--color-cream: #faf6f0
+--color-charcoal: #1e1610
+--color-accent: #d4873a
 --font-display: 'Fraunces'
 --font-body: 'Outfit'
 ```

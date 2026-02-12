@@ -48,28 +48,33 @@ const eventJsonLd = {
     <header class="hero">
       <div class="hero-image">
         <img
-          src="https://images.unsplash.com/photo-1507692049790-de58290a4334?w=800&q=80"
-          alt="Hands raised in worship and prayer"
+          src="/hero.jpg"
+          alt="BBC'26 School of the Spirit - 1 Conference, 3 Nights. Prayer, Worship, Fellowship, Divine Encounters."
           loading="eager"
         />
       </div>
-      <div class="hero-content animate-fade-in">
-        <div class="logo">
-          <span class="logo-text">BBC</span>
-          <span class="logo-year">'26</span>
+      <div class="hero-content">
+        <div class="hero-inner animate-fade-in">
+          <p class="hero-tagline">
+            A transformative summer camp to equip young people
+            with godly courage, faith and clarity.
+          </p>
+          <div class="hero-details">
+            <div class="hero-detail">
+              <span class="hero-detail-label">When</span>
+              <span class="hero-detail-value">July 16-19<br/><span class="hero-detail-year">2026</span></span>
+            </div>
+            <div class="hero-detail">
+              <span class="hero-detail-label">Where</span>
+              <span class="hero-detail-value">Berlin<br/><span class="hero-detail-sub">Grunewald</span></span>
+            </div>
+            <div class="hero-detail">
+              <span class="hero-detail-label">Cost</span>
+              <span class="hero-detail-value">Free</span>
+            </div>
+          </div>
+          <a href="/register" class="btn btn--primary hero-cta">Register Now</a>
         </div>
-        <h1 class="hero-title">
-          Boldness<br/>
-          <span class="hero-amp">&</span><br/>
-          Burdens
-        </h1>
-        <p class="hero-subtitle">Conference 2026</p>
-        <p class="hero-theme">School of the Spirit</p>
-        <p class="hero-tagline">
-          A transformative summer camp designed to equip young people
-          with godly courage, faith and clarity to face life's challenges.
-        </p>
-        <a href="/register" class="btn btn--primary hero-cta">Register Now</a>
       </div>
     </header>
 
@@ -283,127 +288,156 @@ const eventJsonLd = {
 </BaseLayout>
 
 <style>
-  /* Hero Section - Split Layout */
+  /* Hero Section - Editorial Split */
   .hero {
     min-height: 100vh;
+    min-height: 100svh;
     display: grid;
     grid-template-columns: 1fr;
-    background: var(--color-cream);
+    background: var(--color-charcoal);
+    overflow: hidden;
   }
 
   .hero-image {
-    height: 40vh;
-    min-height: 280px;
+    position: relative;
+    height: 55vh;
+    min-height: 360px;
     overflow: hidden;
+  }
+
+  .hero-image::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to top, var(--color-charcoal), transparent);
   }
 
   .hero-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 30%;
+    object-position: center 20%;
   }
 
   .hero-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: var(--space-xl) var(--space-lg);
-    min-height: 60vh;
+    padding: var(--space-xl) var(--space-lg) var(--space-2xl);
+    color: var(--color-cream);
   }
 
-  .logo {
-    display: flex;
-    align-items: baseline;
-    gap: 2px;
-    margin-bottom: var(--space-xl);
-  }
-
-  .logo-text {
-    font-family: var(--font-display);
-    font-size: 1.25rem;
-    font-weight: 600;
-    letter-spacing: 0.15em;
-    color: var(--color-charcoal);
-  }
-
-  .logo-year {
-    font-family: var(--font-display);
-    font-size: 0.875rem;
-    font-style: italic;
-    color: var(--color-accent);
-  }
-
-  @media (min-width: 768px) {
-    .hero {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .hero-image {
-      height: 100vh;
-      position: sticky;
-      top: 0;
-    }
-
-    .hero-content {
-      padding: var(--space-4xl);
-      min-height: 100vh;
-    }
-  }
-
-  .hero-title {
-    font-family: var(--font-display);
-    font-size: clamp(2.5rem, 8vw, 5rem);
-    font-weight: 400;
-    line-height: 0.9;
-    letter-spacing: -0.03em;
-    margin-bottom: var(--space-md);
-  }
-
-  .hero-amp {
-    color: var(--color-accent);
-    font-size: 0.5em;
-    font-weight: 400;
-  }
-
-  .hero-subtitle {
-    font-family: var(--font-display);
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-charcoal-light);
-    margin-bottom: var(--space-xl);
-  }
-
-  .hero .divider {
-    margin: var(--space-xl) auto;
-  }
-
-  .hero-theme {
-    font-family: var(--font-display);
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    font-style: italic;
-    color: var(--color-charcoal);
-    margin-bottom: var(--space-lg);
+  .hero-inner {
+    max-width: 480px;
   }
 
   .hero-tagline {
-    font-size: 0.9375rem;
-    color: var(--color-charcoal-light);
-    line-height: 1.8;
-    max-width: 400px;
-    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--color-cream);
+    line-height: 1.5;
+    margin: 0 0 var(--space-2xl);
+  }
+
+  .hero-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+    margin-bottom: var(--space-2xl);
+    padding-top: var(--space-2xl);
+    border-top: 1px solid rgba(212, 135, 58, 0.3);
+  }
+
+  .hero-detail {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .hero-detail-label {
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .hero-detail-value {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    font-weight: 400;
+    color: var(--color-cream);
+    line-height: 1.2;
+  }
+
+  .hero-detail-year,
+  .hero-detail-sub {
+    font-size: 0.75em;
+    color: rgba(250, 246, 240, 0.5);
   }
 
   .hero-cta {
-    margin-top: var(--space-xl);
     align-self: flex-start;
+    background: var(--color-accent);
+    color: var(--color-charcoal);
+    font-weight: 500;
+    font-size: 1rem;
+    padding: var(--space-md) var(--space-2xl);
+  }
+
+  .hero-cta:hover {
+    background: var(--color-accent-light);
+    color: var(--color-charcoal);
   }
 
   @media (max-width: 480px) {
     .hero-cta {
       width: 100%;
       text-align: center;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .hero-content {
+      padding: var(--space-2xl) var(--space-xl) var(--space-3xl);
+    }
+
+    .hero-tagline {
+      font-size: 1.75rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-image {
+      height: auto;
+      min-height: 100vh;
+      min-height: 100svh;
+      position: sticky;
+      top: 0;
+    }
+
+    .hero-image::after {
+      display: none;
+    }
+
+    .hero-content {
+      padding: var(--space-4xl);
+      min-height: 100vh;
+      min-height: 100svh;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .hero-content {
+      padding: var(--space-4xl) var(--space-4xl) var(--space-4xl) 5rem;
     }
   }
 
