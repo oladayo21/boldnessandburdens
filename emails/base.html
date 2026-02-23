@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>{{subject}}</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&family=Outfit:wght@300;400;500&display=swap');
+
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+    body { margin: 0; padding: 0; width: 100% !important; height: 100% !important; }
+
+    body {
+      background-color: #efe8dc;
+      font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #1e1610;
+      line-height: 1.6;
+    }
+
+    .email-wrapper {
+      width: 100%;
+      padding: 40px 16px;
+    }
+
+    .email-container {
+      max-width: 580px;
+      margin: 0 auto;
+      background-color: #faf6f0;
+    }
+
+    .email-header {
+      padding: 40px 40px 32px;
+      text-align: center;
+    }
+
+    .email-header img {
+      width: 120px;
+      height: auto;
+    }
+
+    .email-header h1 {
+      font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #4a3f35;
+      margin: 16px 0 0;
+    }
+
+    .divider {
+      width: 60px;
+      height: 1px;
+      background-color: #d4873a;
+      margin: 0 auto;
+    }
+
+    .email-body {
+      padding: 32px 40px;
+    }
+
+    .email-body h2 {
+      font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+      font-size: 24px;
+      font-weight: 400;
+      color: #1e1610;
+      margin: 0 0 16px;
+    }
+
+    .email-body p {
+      font-size: 15px;
+      color: #4a3f35;
+      margin: 0 0 16px;
+      line-height: 1.7;
+    }
+
+    .email-body ul {
+      padding-left: 0;
+      margin: 0 0 16px;
+      list-style: none;
+    }
+
+    .email-body ul li {
+      font-size: 15px;
+      color: #4a3f35;
+      padding: 6px 0 6px 20px;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    .email-body ul li::before {
+      content: '\2014';
+      position: absolute;
+      left: 0;
+      color: #d4873a;
+    }
+
+    .email-body .highlight {
+      font-weight: 500;
+      color: #1e1610;
+    }
+
+    .email-body .btn {
+      display: inline-block;
+      padding: 14px 32px;
+      background-color: #1e1610;
+      color: #faf6f0 !important;
+      text-decoration: none;
+      font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    .detail-box {
+      background-color: #efe8dc;
+      padding: 24px;
+      margin: 24px 0;
+    }
+
+    .detail-box h3 {
+      font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0 0 12px;
+      color: #1e1610;
+    }
+
+    .detail-box p {
+      margin: 0 0 6px;
+      font-size: 14px;
+    }
+
+    .email-footer {
+      padding: 32px 40px;
+      text-align: center;
+      border-top: 1px solid #efe8dc;
+    }
+
+    .email-footer p {
+      font-size: 12px;
+      color: #4a3f35;
+      margin: 0 0 4px;
+      line-height: 1.6;
+    }
+
+    .email-footer a {
+      color: #d4873a;
+      text-decoration: none;
+    }
+
+    @media only screen and (max-width: 600px) {
+      .email-header, .email-body, .email-footer {
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="email-wrapper">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tr>
+        <td align="center">
+          <div class="email-container">
+
+            <!-- Header -->
+            <div class="email-header">
+              <img src="https://boldnessandburdens.com/logo-colored.png" alt="Boldness & Burdens Conference" />
+              <h1>School of the Spirit</h1>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Body -->
+            <div class="email-body">
+              {{content}}
+            </div>
+
+            <!-- Footer -->
+            <div class="email-footer">
+              <p>Boldness & Burdens Conference 2026</p>
+              <p>July 16 &ndash; 19, 2026 &middot; Berlin, Germany</p>
+              <p><a href="https://boldnessandburdens.com">boldnessandburdens.com</a> &middot; <a href="mailto:info@boldnessandburdens.com">info@boldnessandburdens.com</a></p>
+            </div>
+
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>
