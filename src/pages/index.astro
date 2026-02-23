@@ -262,6 +262,54 @@ const eventJsonLd = {
       </div>
     </section>
 
+    <!-- Support Section -->
+    <section class="support">
+      <div class="container container--narrow">
+        <h2 class="section-title">Support the Conference</h2>
+        <div class="divider"></div>
+        <p class="support-intro">
+          The conference is completely free for all participants. If you feel led to support
+          the work financially, here are some ways you can give.
+        </p>
+        <div class="support-grid">
+          <div class="support-card">
+            <h3>PayPal</h3>
+            <p>Send via PayPal to support the conference directly.</p>
+            <a href="https://www.paypal.me/HeyMakhel" target="_blank" rel="noopener noreferrer" class="btn btn--outline">
+              <svg class="paypal-icon" width="20" height="24" viewBox="0 0 24 32" fill="none">
+                <path d="M20.4 7.8c-.1-.7-.3-1.3-.6-1.9C18.6 3.5 15.8 2 12.3 2H4.8c-.5 0-.9.4-1 .8L1 25.2c0 .4.2.7.6.7h4.5l1.1-7.1-.1.2c.1-.5.5-.8 1-.8h2c4 0 7.2-1.6 8.1-6.4.1-.1.1-.3.1-.4.3-1.6.2-2.7-.5-3.6z" fill="#27346A"/>
+                <path d="M20.4 7.8c-.1-.7-.3-1.3-.6-1.9C18.6 3.5 15.8 2 12.3 2H4.8c-.5 0-.9.4-1 .8L1 25.2c0 .4.2.7.6.7h4.5l1.1-7.1-.1.2c.1-.5.5-.8 1-.8h2c4 0 7.2-1.6 8.1-6.4.1-.1.1-.3.1-.4" fill="#27346A"/>
+                <path d="M9.2 7.9c0-.3.2-.5.4-.7.1-.1.3-.1.4-.1h6.2c.7 0 1.4.1 2 .2.2 0 .3.1.5.1.2.1.3.1.5.2.1 0 .2.1.2.1.3.1.5.3.7.5.3-1.6 0-2.7-.7-3.7C18.2 3.1 15.5 1.7 12 1.7H4.5c-.5 0-1 .4-1 .9L.6 25.3c-.1.4.3.8.7.8h4.5l1.1-7.2 2.3-11z" fill="#2790C3"/>
+                <path d="M20.9 11.4c-.9 4.7-4 6.3-8 6.3h-2c-.5 0-.9.4-1 .9l-1 6.6c0 .3.2.6.5.6h3.6c.4 0 .8-.3.9-.7v-.2l.7-4.2v-.2c.1-.4.4-.7.9-.7h.5c3.5 0 6.3-1.4 7.1-5.6.3-1.7.2-3.2-.7-4.2-.3-.3-.6-.5-.9-.6-.1.7-.3 1.3-.6 2z" fill="#1F264F"/>
+              </svg>
+              <span>Give via PayPal</span>
+            </a>
+          </div>
+          <div class="support-card">
+            <h3>Bank Transfer</h3>
+            <div class="bank-details">
+              <div class="bank-row">
+                <span class="bank-label">Beneficiary</span>
+                <span class="bank-value">Helen Ajeamo</span>
+              </div>
+              <div class="bank-row">
+                <span class="bank-label">IBAN</span>
+                <span class="bank-value">DE22 1001 0178 3877 6363 76</span>
+              </div>
+              <div class="bank-row">
+                <span class="bank-label">BIC / SWIFT</span>
+                <span class="bank-value">REVODEB2</span>
+              </div>
+              <div class="bank-row">
+                <span class="bank-label">Correspondent BIC</span>
+                <span class="bank-value">CHASDEFX</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
       <div class="container">
@@ -898,6 +946,103 @@ const eventJsonLd = {
     width: 6px;
     height: 1px;
     background: var(--color-accent);
+  }
+
+  /* Support Section */
+  .support {
+    padding: var(--space-3xl) 0;
+  }
+
+  @media (min-width: 768px) {
+    .support {
+      padding: var(--space-4xl) 0;
+    }
+  }
+
+  .support .section-title {
+    text-align: center;
+  }
+
+  .support .divider {
+    margin: var(--space-md) auto var(--space-xl);
+  }
+
+  .support-intro {
+    text-align: center;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--color-charcoal-light);
+    margin-bottom: var(--space-2xl);
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .support-grid {
+    display: grid;
+    gap: var(--space-xl);
+  }
+
+  @media (min-width: 600px) {
+    .support-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .support-card {
+    background: var(--color-cream-dark);
+    padding: var(--space-xl);
+  }
+
+  .support-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: var(--space-sm);
+  }
+
+  .support-card p {
+    font-size: 0.875rem;
+    color: var(--color-charcoal-light);
+    line-height: 1.6;
+    margin-bottom: var(--space-lg);
+  }
+
+  .bank-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+  }
+
+  .bank-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid rgba(42, 40, 38, 0.08);
+  }
+
+  .bank-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .paypal-icon {
+    flex-shrink: 0;
+  }
+
+  .bank-label {
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .bank-value {
+    font-size: 0.9375rem;
+    color: var(--color-charcoal);
+    font-weight: 500;
   }
 
   /* Footer */
