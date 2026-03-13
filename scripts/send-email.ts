@@ -27,6 +27,7 @@ const { values } = parseArgs({
     force: { type: "boolean", default: false },
     sync: { type: "boolean", default: false },
     subject: { type: "string", short: "s" },
+    emails: { type: "string" },
   },
   strict: true,
 });
@@ -51,7 +52,7 @@ if (values.sync) {
 // --- Validate template ---
 
 if (!values.template) {
-  console.error("Usage: bun scripts/send-email.ts --template <name> [--to email] [--dry-run] [--force]");
+  console.error("Usage: bun scripts/send-email.ts --template <name> [--to email] [--emails a@x,b@x] [--dry-run] [--force]");
   console.error("       bun scripts/send-email.ts --sync");
   console.error("");
   console.error("Templates available:");
@@ -78,24 +79,7 @@ if (!existsSync(templatePath)) {
 const baseHtml = readFileSync(join(EMAILS_DIR, "base.html"), "utf-8");
 const contentHtml = readFileSync(templatePath, "utf-8");
 
-// --- Load CSV ---
-
-if (!existsSync(LOCAL_CSV)) {
-  console.log("No local CSV found. Syncing from Downloads...");
-
-  if (!existsSync(DOWNLOADS_CSV)) {
-    console.error(`CSV not found at ${DOWNLOADS_CSV}`);
-    console.error("Download the CSV from Netlify and place it in ~/Downloads/registration.csv");
-    process.exit(1);
-  }
-
-  if (!existsSync(DATA_DIR)) {
-    mkdirSync(DATA_DIR, { recursive: true });
-  }
-
-  copyFileSync(DOWNLOADS_CSV, LOCAL_CSV);
-  console.log("Synced.");
-}
+// --- Load recipients ---
 
 function parseCSV(csv: string): Record<string, string>[] {
   const lines = csv.trim().split("\n");
@@ -131,8 +115,34 @@ function parseCSV(csv: string): Record<string, string>[] {
   });
 }
 
-const csvContent = readFileSync(LOCAL_CSV, "utf-8");
-const registrants = parseCSV(csvContent);
+let registrants: Record<string, string>[];
+
+if (values.emails) {
+  registrants = values.emails.split(",").map((e) => ({
+    email: e.trim(),
+    full_name: "Friend",
+  }));
+} else {
+  if (!existsSync(LOCAL_CSV)) {
+    console.log("No local CSV found. Syncing from Downloads...");
+
+    if (!existsSync(DOWNLOADS_CSV)) {
+      console.error(`CSV not found at ${DOWNLOADS_CSV}`);
+      console.error("Download the CSV from Netlify and place it in ~/Downloads/registration.csv");
+      process.exit(1);
+    }
+
+    if (!existsSync(DATA_DIR)) {
+      mkdirSync(DATA_DIR, { recursive: true });
+    }
+
+    copyFileSync(DOWNLOADS_CSV, LOCAL_CSV);
+    console.log("Synced.");
+  }
+
+  const csvContent = readFileSync(LOCAL_CSV, "utf-8");
+  registrants = parseCSV(csvContent);
+}
 
 // --- Sent log ---
 
@@ -181,6 +191,7 @@ function render(template: string, vars: Record<string, string>): string {
 
 const defaultSubjects: Record<string, string> = {
   "registration-confirmation": "Your BBC'26 Registration is Confirmed",
+  "invitation": "You're Invited to BBC'26",
 };
 
 // --- SMTP setup ---
