@@ -50,6 +50,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               </div>
 
               <div class="info-box">
+                <h3>Conference T-Shirt</h3>
+                <p>Official BBC'26 conference t-shirts will be available for purchase. Details on pricing will be shared closer to the event.</p>
+              </div>
+
+              <div class="info-box">
                 <h3>What to Bring</h3>
                 <p>Participants are required to bring their personal toiletries, including:</p>
                 <ul class="bring-list">
@@ -142,6 +147,34 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                   />
                 </div>
               </div>
+
+              <div class="form-group">
+                <label class="form-label">Would you like to purchase a conference t-shirt?</label>
+                <div class="conditional-field">
+                  <div class="radio-group">
+                    <label class="form-check form-check--inline">
+                      <input type="radio" name="wants_tshirt" value="no" data-toggle="tshirt_size_detail" data-hide />
+                      <span class="form-check-label">No</span>
+                    </label>
+                    <label class="form-check form-check--inline">
+                      <input type="radio" name="wants_tshirt" value="yes" data-toggle="tshirt_size_detail" data-show />
+                      <span class="form-check-label">Yes</span>
+                    </label>
+                  </div>
+                  <div id="tshirt_size_detail" class="conditional-input hidden">
+                    <label class="form-label" for="tshirt_size">Shirt Size</label>
+                    <select id="tshirt_size" name="tshirt_size" class="form-input">
+                      <option value="" disabled selected>Select your size</option>
+                      <option value="XS">XS</option>
+                      <option value="S">S</option>
+                      <option value="M">M</option>
+                      <option value="L">L</option>
+                      <option value="XL">XL</option>
+                      <option value="XXL">XXL</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -202,25 +235,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
               <div class="form-row">
                 <div class="form-group">
-                  <label class="form-label" for="emergency_contact_name">Emergency Contact Name <span class="required">*</span></label>
+                  <label class="form-label" for="emergency_contact_name">Emergency Contact Name</label>
                   <input
                     type="text"
                     id="emergency_contact_name"
                     name="emergency_contact_name"
                     class="form-input"
                     placeholder="Full name"
-                    required
                   />
                 </div>
                 <div class="form-group">
-                  <label class="form-label" for="emergency_contact_phone">Emergency Contact Phone <span class="required">*</span></label>
+                  <label class="form-label" for="emergency_contact_phone">Emergency Contact Phone</label>
                   <input
                     type="tel"
                     id="emergency_contact_phone"
                     name="emergency_contact_phone"
                     class="form-input"
                     placeholder="+49 XXX XXXXXXX"
-                    required
                   />
                 </div>
               </div>
