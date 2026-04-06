@@ -1,0 +1,175 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+interface Submission {
+  id: string;
+  created_at: string;
+  data: Record<string, string>;
+}
+
+const token = import.meta.env.NETLIFY_API_TOKEN;
+const siteId = import.meta.env.NETLIFY_SITE_ID;
+
+let submissions: Submission[] = [];
+let fetchError = '';
+
+if (!token || !siteId) {
+  fetchError = 'Server misconfigured: missing NETLIFY_API_TOKEN or NETLIFY_SITE_ID';
+} else {
+  try {
+    const res = await fetch(
+      `https://api.netlify.com/api/v1/sites/${siteId}/submissions?per_page=200`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'User-Agent': 'bbc26-admin',
+        },
+      },
+    );
+
+    if (!res.ok) {
+      fetchError = `Netlify API returned ${res.status}`;
+    } else {
+      submissions = (await res.json()) as Submission[];
+    }
+  } catch (err) {
+    fetchError = `Failed to reach Netlify API: ${(err as Error).message}`;
+  }
+}
+
+// Dedup by name + email so siblings sharing an inbox still appear.
+const seen = new Set<string>();
+const unique = submissions
+  .filter((s) => {
+    const name = s.data?.full_name?.toLowerCase().trim();
+    const email = s.data?.email?.toLowerCase().trim();
+
+    if (!name || !email) return false;
+
+    const key = `${name}|${email}`;
+
+    if (seen.has(key)) return false;
+
+    seen.add(key);
+
+    return true;
+  })
+  .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+const lastUpdated = new Date().toLocaleString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+});
+---
+
+<BaseLayout title="Registrants" noindex={true}>
+  <div class="admin-page">
+    <header class="admin-header">
+      <div class="container">
+        <h2>Registrants</h2>
+        <p class="meta">
+          {unique.length} registered &middot; Live at {lastUpdated}
+        </p>
+      </div>
+    </header>
+
+    <div class="container">
+      {fetchError ? (
+        <p class="error">{fetchError}</p>
+      ) : (
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>T-Shirt</th>
+                <th>Registered</th>
+              </tr>
+            </thead>
+            <tbody>
+              {unique.map((s, i) => (
+                <tr>
+                  <td class="num">{i + 1}</td>
+                  <td>{s.data.full_name?.trim()}</td>
+                  <td>{s.data.wants_tshirt === 'yes' ? `Yes (${s.data.tshirt_size})` : '--'}</td>
+                  <td>{new Date(s.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .admin-page {
+    min-height: 100vh;
+  }
+
+  .admin-header {
+    padding: var(--space-2xl) 0 var(--space-lg);
+    border-bottom: 1px solid var(--color-cream-dark);
+  }
+
+  .admin-header h2 {
+    margin-bottom: var(--space-xs);
+  }
+
+  .meta {
+    color: var(--color-charcoal-light);
+    font-size: 0.875rem;
+  }
+
+  .error {
+    margin-top: var(--space-xl);
+    padding: var(--space-md);
+    color: var(--color-error);
+    border: 1px solid var(--color-error);
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    margin-top: var(--space-xl);
+    padding-bottom: var(--space-2xl);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  th {
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-charcoal-light);
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 2px solid var(--color-charcoal);
+  }
+
+  td {
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--color-cream-dark);
+  }
+
+  tr:hover td {
+    background: var(--color-cream-dark);
+  }
+
+  .num {
+    color: var(--color-charcoal-light);
+    font-size: 0.75rem;
+  }
+</style>
