@@ -1,0 +1,252 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { readFileSync, statSync } from 'fs';
+import { join } from 'path';
+
+const csvPath = join(process.cwd(), 'data', 'registrants.csv');
+let registrants: Record<string, string>[] = [];
+let lastUpdated = '';
+
+try {
+  lastUpdated = statSync(csvPath).mtime.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+} catch {
+  // CSV not found
+}
+
+try {
+  const csv = readFileSync(csvPath, 'utf-8');
+  const lines = csv.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
+
+  registrants = lines.slice(1).map(line => {
+    const values: string[] = [];
+    let current = '';
+    let inQuotes = false;
+
+    for (const char of line) {
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        values.push(current.trim());
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+
+    values.push(current.trim());
+
+    const record: Record<string, string> = {};
+    headers.forEach((header, i) => {
+      record[header] = values[i] || '';
+    });
+
+    return record;
+  });
+} catch {
+  // CSV not found at build time
+}
+
+const seen = new Set<string>();
+const unique = registrants.filter(r => {
+  const email = r.email?.toLowerCase().trim();
+  const name = r.full_name?.toLowerCase().trim();
+
+  if (!email || !name) return false;
+
+  const key = `${name}|${email}`;
+
+  if (seen.has(key)) return false;
+
+  seen.add(key);
+
+  return true;
+});
+---
+
+<BaseLayout title="Registrants" noindex={true}>
+  <div class="admin-page">
+    <div id="login-gate" class="gate">
+      <div class="gate-box">
+        <h2>Admin Access</h2>
+        <p>Enter the admin password to view registrants.</p>
+        <form id="auth-form">
+          <input
+            type="password"
+            id="password-input"
+            class="form-input"
+            placeholder="Password"
+            autocomplete="off"
+          />
+          <button type="submit" class="btn btn--primary" style="width: 100%; margin-top: var(--space-md);">
+            View Registrants
+          </button>
+          <p id="error-msg" class="error-msg" style="display: none;">Incorrect password.</p>
+        </form>
+      </div>
+    </div>
+
+    <div id="registrant-list" style="display: none;">
+      <header class="admin-header">
+        <div class="container">
+          <h2>Registrants</h2>
+          <p class="meta">
+            {unique.length} registered
+            {lastUpdated && <> &middot; Last updated {lastUpdated}</>}
+          </p>
+        </div>
+      </header>
+
+      <div class="container">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>T-Shirt</th>
+                <th>Registered</th>
+              </tr>
+            </thead>
+            <tbody>
+              {unique.map((r, i) => (
+                <tr>
+                  <td class="num">{i + 1}</td>
+                  <td>{r.full_name?.trim()}</td>
+                  <td>{r.wants_tshirt === 'yes' ? `Yes (${r.tshirt_size})` : '--'}</td>
+                  <td>{new Date(r.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const ADMIN_HASH = "d7c5dd1de7ae309265c7f1cdf8fa333a574aa5f894a4c94a244e3db973d8815c";
+
+  async function sha256(text: string): Promise<string> {
+    const data = new TextEncoder().encode(text);
+    const hash = await crypto.subtle.digest("SHA-256", data);
+
+    return Array.from(new Uint8Array(hash))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+  }
+
+  function unlock() {
+    document.getElementById("login-gate")!.style.display = "none";
+    document.getElementById("registrant-list")!.style.display = "block";
+    sessionStorage.setItem("bbc-admin", "1");
+  }
+
+  if (sessionStorage.getItem("bbc-admin") === "1") {
+    unlock();
+  }
+
+  document.getElementById("auth-form")!.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const input = (document.getElementById("password-input") as HTMLInputElement).value;
+    const hash = await sha256(input);
+
+    if (hash === ADMIN_HASH) {
+      unlock();
+    } else {
+      document.getElementById("error-msg")!.style.display = "block";
+    }
+  });
+</script>
+
+<style>
+  .admin-page {
+    min-height: 100vh;
+  }
+
+  .gate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: var(--space-xl);
+  }
+
+  .gate-box {
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+  }
+
+  .gate-box h2 {
+    margin-bottom: var(--space-sm);
+  }
+
+  .gate-box p {
+    color: var(--color-charcoal-light);
+    margin-bottom: var(--space-xl);
+  }
+
+  .error-msg {
+    color: var(--color-error);
+    font-size: 0.875rem;
+    margin-top: var(--space-md);
+  }
+
+  .admin-header {
+    padding: var(--space-2xl) 0 var(--space-lg);
+    border-bottom: 1px solid var(--color-cream-dark);
+  }
+
+  .admin-header h2 {
+    margin-bottom: var(--space-xs);
+  }
+
+  .meta {
+    color: var(--color-charcoal-light);
+    font-size: 0.875rem;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    margin-top: var(--space-xl);
+    padding-bottom: var(--space-2xl);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  th {
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-charcoal-light);
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 2px solid var(--color-charcoal);
+  }
+
+  td {
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--color-cream-dark);
+  }
+
+  tr:hover td {
+    background: var(--color-cream-dark);
+  }
+
+  .num {
+    color: var(--color-charcoal-light);
+    font-size: 0.75rem;
+  }
+</style>

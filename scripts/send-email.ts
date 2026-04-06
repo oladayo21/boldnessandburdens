@@ -192,6 +192,7 @@ function render(template: string, vars: Record<string, string>): string {
 const defaultSubjects: Record<string, string> = {
   "registration-confirmation": "Your BBC'26 Registration is Confirmed",
   "invitation": "You're Invited to BBC'26",
+  "general-invitation": "BBC 2026: A Gathering for Everyone Seeking More of God",
 };
 
 // --- SMTP setup ---
@@ -237,7 +238,7 @@ let skipped = 0;
 let errors = 0;
 
 for (const registrant of recipients) {
-  const email = registrant.email;
+  const email = registrant.email?.toLowerCase();
 
   if (!email) {
     continue;
@@ -256,6 +257,8 @@ for (const registrant of recipients) {
     phone: registrant.phone || "",
     city: registrant.city || "",
     gender: registrant.gender || "",
+    wants_tshirt: registrant.wants_tshirt || "no",
+    tshirt_size: registrant.tshirt_size || "",
     emergency_contact_name: registrant.emergency_contact_name || "",
     emergency_contact_phone: registrant.emergency_contact_phone || "",
     subject,
