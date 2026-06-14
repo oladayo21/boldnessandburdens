@@ -9,6 +9,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return next();
   }
 
+  // Registration has closed -- the admin area is disabled for now.
+  // Set to false to re-enable password-protected admin access.
+  const ADMIN_DISABLED = true;
+
+  if (ADMIN_DISABLED) {
+    return context.redirect('/', 302);
+  }
+
   const password = import.meta.env.ADMIN_PASSWORD;
 
   if (!password) {

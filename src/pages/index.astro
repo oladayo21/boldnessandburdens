@@ -12,12 +12,12 @@ const eventJsonLd = {
   "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
   "location": {
     "@type": "Place",
-    "name": "KJFE Chance",
+    "name": "Boldness and Burdens Conference Venue",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Teufelsseechaussee 17",
+      "streetAddress": "Krimnitzer Weg 25",
       "addressLocality": "Berlin",
-      "postalCode": "14193",
+      "postalCode": "12527",
       "addressCountry": "DE"
     }
   },
@@ -41,40 +41,20 @@ const eventJsonLd = {
 <BaseLayout
   title="BBC'26 - School of the Spirit | Boldness and Burdens Conference"
   canonicalPath="/"
+  transparentHeader={true}
 >
   <script type="application/ld+json" set:html={JSON.stringify(eventJsonLd)} />
   <main>
     <!-- Hero Section -->
     <header class="hero">
-      <div class="hero-image">
+      <div class="hero-bg">
         <img
-          src="/hero.jpg"
-          alt="BBC'26 School of the Spirit - 1 Conference, 3 Nights. Prayer, Worship, Fellowship, Divine Encounters."
+          src="/hero-banner.jpg"
+          alt="BBC'26 School of the Spirit - Boldness and Burdens Conference, July 16-19 2026, Berlin."
           loading="eager"
+          width="1920"
+          height="1080"
         />
-      </div>
-      <div class="hero-content">
-        <div class="hero-inner animate-fade-in">
-          <p class="hero-tagline">
-            A transformative summer camp to equip young people
-            with godly courage, faith and clarity.
-          </p>
-          <div class="hero-details">
-            <div class="hero-detail">
-              <span class="hero-detail-label">When</span>
-              <span class="hero-detail-value">July 16-19<br/><span class="hero-detail-year">2026</span></span>
-            </div>
-            <div class="hero-detail">
-              <span class="hero-detail-label">Where</span>
-              <span class="hero-detail-value">Berlin<br/><span class="hero-detail-sub">Grunewald</span></span>
-            </div>
-            <div class="hero-detail">
-              <span class="hero-detail-label">Cost</span>
-              <span class="hero-detail-value">Free</span>
-            </div>
-          </div>
-          <a href="/register" class="btn btn--primary hero-cta">Register Now</a>
-        </div>
       </div>
     </header>
 
@@ -104,32 +84,27 @@ const eventJsonLd = {
 
     <!-- Vision Section -->
     <section class="vision">
-      <div class="container container--narrow">
-        <h2 class="section-title">Time for Boldness & Burdens Conference 2026</h2>
-        <div class="divider"></div>
+      <div class="container container--narrow vision-head reveal">
+        <p class="eyebrow vision-eyebrow">The Vision</p>
+        <h2 class="section-title">Time for Boldness &amp; Burdens Conference 2026</h2>
         <p class="vision-intro">
           There are special times and seasons. Moments God sets apart for encounter,
-          alignment, and renewal. Boldness & Burdens Conference is a gathering set apart
+          alignment, and renewal. Boldness &amp; Burdens Conference is a gathering set apart
           for young people, individuals, and families who desire more of God.
         </p>
-        <blockquote class="vision-highlight">
-          <p>This is a School of the Spirit.</p>
-          <p>A place of prayer, teaching, waiting, and encounter.</p>
-        </blockquote>
-        <h3 class="vision-subheading">What to Expect</h3>
-        <ul class="vision-list">
-          <li>Extended times of prayer</li>
-          <li>Worship and spiritual songs</li>
-          <li>Teaching and impartation</li>
-          <li>Space for God to move supernaturally</li>
-          <li>Moments of personal encounter and renewal</li>
-        </ul>
-        <p class="vision-closing">
-          This is a time to lay down burdens and receive boldness.
-        </p>
-        <p class="vision-cta">
-          <strong>Pray. Plan. Prepare. Invite a friend. Come expectant.</strong>
-        </p>
+      </div>
+
+      <blockquote class="vision-highlight reveal">
+        <div class="container container--narrow">
+          <p>This is a School of the Spirit &mdash; a place of prayer, teaching, waiting, and encounter.</p>
+        </div>
+      </blockquote>
+
+      <div class="container container--narrow vision-body">
+        <div class="vision-callout reveal">
+          <p class="vision-closing">This is a time to lay down burdens and receive boldness.</p>
+          <p class="vision-cta">Pray. Plan. Prepare. Invite a friend. Come expectant.</p>
+        </div>
       </div>
     </section>
 
@@ -137,7 +112,7 @@ const eventJsonLd = {
     <section class="details">
       <div class="container">
         <div class="details-grid">
-          <div class="detail-card animate-fade-in-up">
+          <div class="detail-card reveal">
             <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <rect x="3" y="4" width="18" height="18" rx="2"/>
               <path d="M16 2v4M8 2v4M3 10h18"/>
@@ -149,18 +124,18 @@ const eventJsonLd = {
               <p class="detail-sub">2026</p>
             </div>
           </div>
-          <div class="detail-card animate-fade-in-up delay-1">
+          <div class="detail-card reveal delay-1">
             <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
               <circle cx="12" cy="9" r="2.5"/>
             </svg>
             <div class="detail-text">
               <span class="detail-label">Where</span>
-              <h3 class="detail-value">Berlin-Grunewald</h3>
-              <p class="detail-sub">KJFE, Chance<br/>Teufelsseechaussee 17<br/>14193 Berlin</p>
+              <h3 class="detail-value">Berlin-Köpenick</h3>
+              <p class="detail-sub">Krimnitzer Weg 25<br/>12527 Berlin</p>
             </div>
           </div>
-          <div class="detail-card animate-fade-in-up delay-2">
+          <div class="detail-card reveal delay-2">
             <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>
             </svg>
@@ -170,7 +145,7 @@ const eventJsonLd = {
               <p class="detail-sub">1 Conference</p>
             </div>
           </div>
-          <div class="detail-card animate-fade-in-up delay-3">
+          <div class="detail-card reveal delay-3">
             <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"/>
               <path d="M12 3v12M12 3l4 4M12 3 8 7"/>
@@ -189,10 +164,10 @@ const eventJsonLd = {
     <!-- Experience Section -->
     <section class="experience">
       <div class="container">
-        <h2 class="section-title">The Experience</h2>
+        <h2 class="section-title reveal">The Experience</h2>
         <div class="divider"></div>
         <div class="experience-grid">
-          <div class="experience-card">
+          <div class="experience-card reveal">
             <svg class="experience-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <path d="M12 5c-1.5-2-4-2.5-6-1s-2.5 4.5-1 7c1 1.5 7 7 7 7s6-5.5 7-7c1.5-2.5 1-5.5-1-7s-4.5-1-6 1z"/>
               <path d="M12 5v4M10 7h4"/>
@@ -200,7 +175,7 @@ const eventJsonLd = {
             <h3>Prayer</h3>
             <p>Extended times of personal and corporate prayer</p>
           </div>
-          <div class="experience-card">
+          <div class="experience-card reveal delay-1">
             <svg class="experience-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <circle cx="12" cy="12" r="3"/>
               <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
@@ -208,7 +183,15 @@ const eventJsonLd = {
             <h3>Worship</h3>
             <p>Spirit-led worship and spiritual songs</p>
           </div>
-          <div class="experience-card">
+          <div class="experience-card reveal delay-2">
+            <svg class="experience-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M4 5a2 2 0 0 1 2-2h6v16H6a2 2 0 0 0-2 2z"/>
+              <path d="M20 5a2 2 0 0 0-2-2h-6v16h6a2 2 0 0 1 2 2z"/>
+            </svg>
+            <h3>Teaching</h3>
+            <p>Sound teaching and impartation from the Word</p>
+          </div>
+          <div class="experience-card reveal delay-3">
             <svg class="experience-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <circle cx="9" cy="7" r="4"/>
               <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
@@ -218,7 +201,7 @@ const eventJsonLd = {
             <h3>Fellowship</h3>
             <p>Connect with like-minded believers</p>
           </div>
-          <div class="experience-card">
+          <div class="experience-card reveal delay-4">
             <svg class="experience-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
             </svg>
@@ -233,7 +216,7 @@ const eventJsonLd = {
     <section class="included">
       <div class="container">
         <div class="included-grid">
-          <div class="included-text">
+          <div class="included-text reveal">
             <h2 class="section-title">What's Included</h2>
             <div class="divider"></div>
             <ul class="included-list">
@@ -247,7 +230,7 @@ const eventJsonLd = {
               </li>
             </ul>
           </div>
-          <div class="included-bring">
+          <div class="included-bring reveal delay-1">
             <h3>What to Bring</h3>
             <p class="bring-intro">Please bring your personal toiletries:</p>
             <ul class="bring-list">
@@ -263,19 +246,20 @@ const eventJsonLd = {
     </section>
 
     <!-- Support Section -->
-    <section class="support">
+    <section class="support" id="support">
       <div class="container container--narrow">
-        <h2 class="section-title">Support the Conference</h2>
+        <h2 class="section-title reveal">Support the Conference</h2>
         <div class="divider"></div>
         <p class="support-intro">
-          The conference is completely free for all participants. If you feel led to support
-          the work financially, here are some ways you can give.
+          The conference is completely free for every participant, made possible entirely by
+          the generosity of those who give. If you feel led to help us cover the costs, here
+          are two ways you can give.
         </p>
         <div class="support-grid">
-          <div class="support-card">
+          <div class="support-card reveal">
             <h3>PayPal</h3>
             <p>Send via PayPal to support the conference directly.</p>
-            <a href="https://www.paypal.me/HeyMakhel" target="_blank" rel="noopener noreferrer" class="btn btn--outline">
+            <a href="https://www.paypal.me/HeyMakhel" target="_blank" rel="noopener noreferrer" class="btn btn--primary">
               <svg class="paypal-icon" width="20" height="24" viewBox="0 0 24 32" fill="none">
                 <path d="M20.4 7.8c-.1-.7-.3-1.3-.6-1.9C18.6 3.5 15.8 2 12.3 2H4.8c-.5 0-.9.4-1 .8L1 25.2c0 .4.2.7.6.7h4.5l1.1-7.1-.1.2c.1-.5.5-.8 1-.8h2c4 0 7.2-1.6 8.1-6.4.1-.1.1-.3.1-.4.3-1.6.2-2.7-.5-3.6z" fill="#27346A"/>
                 <path d="M20.4 7.8c-.1-.7-.3-1.3-.6-1.9C18.6 3.5 15.8 2 12.3 2H4.8c-.5 0-.9.4-1 .8L1 25.2c0 .4.2.7.6.7h4.5l1.1-7.1-.1.2c.1-.5.5-.8 1-.8h2c4 0 7.2-1.6 8.1-6.4.1-.1.1-.3.1-.4" fill="#27346A"/>
@@ -285,7 +269,7 @@ const eventJsonLd = {
               <span>Give via PayPal</span>
             </a>
           </div>
-          <div class="support-card">
+          <div class="support-card reveal delay-1">
             <h3>Bank Transfer</h3>
             <div class="bank-details">
               <div class="bank-row">
@@ -314,8 +298,8 @@ const eventJsonLd = {
     <footer class="footer">
       <div class="container">
         <div class="footer-cta">
-          <p class="footer-cta-text">Register now to join other young believers to experience times of refreshing!</p>
-          <a href="/register" class="btn btn--primary">Register Now</a>
+          <p class="footer-cta-text">This conference is free for every young believer. If you feel led, help us make it happen.</p>
+          <a href="#support" class="btn btn--primary">Support the Conference</a>
         </div>
         <div class="footer-content">
           <div class="footer-info">
@@ -336,157 +320,47 @@ const eventJsonLd = {
 </BaseLayout>
 
 <style>
-  /* Hero Section - Editorial Split */
+  /* Hero - full-bleed banner, details band below (no overlap with baked title) */
   .hero {
-    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     min-height: 100svh;
-    display: grid;
-    grid-template-columns: 1fr;
     background: var(--color-charcoal);
     overflow: hidden;
   }
 
-  .hero-image {
+  .hero-bg {
     position: relative;
-    height: 55vh;
-    min-height: 360px;
-    overflow: hidden;
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
-  .hero-image::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 120px;
-    background: linear-gradient(to top, var(--color-charcoal), transparent);
-  }
-
-  .hero-image img {
+  .hero-bg img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 20%;
+    object-position: center;
+    transform-origin: center;
+    animation: heroKenBurns 22s var(--ease-out) forwards;
   }
 
-  .hero-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: var(--space-xl) var(--space-lg) var(--space-2xl);
-    color: var(--color-cream);
+  /* slow, barely-there drift so the static artwork breathes */
+  @keyframes heroKenBurns {
+    from { transform: scale(1); }
+    to { transform: scale(1.07); }
   }
 
-  .hero-inner {
-    max-width: 480px;
+  @media (prefers-reduced-motion: reduce) {
+    .hero-bg img { animation: none; }
   }
 
-  .hero-tagline {
-    font-family: var(--font-display);
-    font-size: clamp(1.5rem, 4vw, 2.25rem);
-    font-style: italic;
-    font-weight: 400;
-    color: var(--color-cream);
-    line-height: 1.5;
-    margin: 0 0 var(--space-2xl);
-  }
-
-  .hero-details {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-md);
-    margin-bottom: var(--space-2xl);
-    padding-top: var(--space-2xl);
-    border-top: 1px solid rgba(212, 135, 58, 0.3);
-  }
-
-  .hero-detail {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-  }
-
-  .hero-detail-label {
-    font-size: 0.625rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-  }
-
-  .hero-detail-value {
-    font-family: var(--font-display);
-    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-    font-weight: 400;
-    color: var(--color-cream);
-    line-height: 1.2;
-  }
-
-  .hero-detail-year,
-  .hero-detail-sub {
-    font-size: 0.75em;
-    color: rgba(250, 246, 240, 0.5);
-  }
-
-  .hero-cta {
-    align-self: flex-start;
-    background: var(--color-accent);
-    color: var(--color-charcoal);
-    font-weight: 500;
-    font-size: 1rem;
-    padding: var(--space-md) var(--space-2xl);
-  }
-
-  .hero-cta:hover {
-    background: var(--color-accent-light);
-    color: var(--color-charcoal);
-  }
-
-  @media (max-width: 480px) {
-    .hero-cta {
-      width: 100%;
-      text-align: center;
-    }
-  }
-
-  @media (min-width: 768px) {
-    .hero-content {
-      padding: var(--space-2xl) var(--space-xl) var(--space-3xl);
-    }
-
-    .hero-tagline {
-      font-size: 1.75rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .hero {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .hero-image {
-      height: auto;
-      min-height: 100vh;
-      min-height: 100svh;
-      position: sticky;
-      top: 0;
-    }
-
-    .hero-image::after {
-      display: none;
-    }
-
-    .hero-content {
-      padding: var(--space-4xl);
-      min-height: 100vh;
-      min-height: 100svh;
-    }
-  }
-
-  @media (min-width: 1200px) {
-    .hero-content {
-      padding: var(--space-4xl) var(--space-4xl) var(--space-4xl) 5rem;
-    }
+  /* soft vignette to focus the artwork toward the centre */
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(125% 95% at 50% 38%, transparent 58%, rgba(20, 14, 10, 0.5) 100%);
   }
 
   /* Countdown Section */
@@ -545,107 +419,87 @@ const eventJsonLd = {
 
   /* Vision Section */
   .vision {
-    padding: var(--space-3xl) 0;
+    padding: var(--space-3xl) 0 0;
+  }
+
+  .vision-head { text-align: center; }
+
+  .vision-eyebrow {
+    margin-bottom: var(--space-md);
   }
 
   .vision .section-title {
-    font-size: clamp(1.5rem, 4vw, 2rem);
-    margin-bottom: var(--space-md);
-    text-align: center;
-  }
-
-  .vision .divider {
-    margin: 0 auto var(--space-xl);
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: var(--space-lg);
+    text-wrap: balance;
   }
 
   .vision-intro {
-    font-size: 1rem;
+    font-size: clamp(1rem, 2vw, 1.15rem);
     line-height: 1.8;
     color: var(--color-charcoal-light);
-    margin-bottom: var(--space-xl);
+    margin: 0;
   }
 
+  /* focal pull-quote on a warm ember band */
   .vision-highlight {
-    text-align: center;
-    margin: var(--space-2xl) 0;
-    padding: var(--space-xl) 0;
+    margin: var(--space-3xl) 0;
+    padding: var(--space-3xl) 0;
+    background:
+      radial-gradient(60% 140% at 50% 50%, rgba(230, 168, 92, 0.16), transparent 70%),
+      var(--color-cream-dark);
+    border-top: 1px solid rgba(212, 135, 58, 0.2);
+    border-bottom: 1px solid rgba(212, 135, 58, 0.2);
   }
 
   .vision-highlight p {
+    position: relative;
     font-family: var(--font-display);
-    font-size: clamp(1.25rem, 4vw, 1.75rem);
-    font-style: italic;
-    line-height: 1.5;
+    font-weight: 400;
+    font-size: clamp(1.75rem, 4.5vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: 0.02em;
+    text-align: center;
+    text-wrap: balance;
     color: var(--color-charcoal);
     margin: 0;
   }
 
-  .vision-highlight p:first-child {
-    margin-bottom: var(--space-sm);
+  .vision-highlight p::before {
+    content: '“';
+    color: var(--color-accent);
   }
-
-  .vision-highlight p:first-child::before {
-    content: '"';
+  .vision-highlight p::after {
+    content: '”';
     color: var(--color-accent);
   }
 
-  .vision-highlight p:last-child::after {
-    content: '"';
-    color: var(--color-accent);
-  }
+  .vision-body { padding-bottom: var(--space-3xl); }
 
-  .vision-subheading {
-    font-family: var(--font-display);
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: var(--space-md);
-    color: var(--color-charcoal);
-  }
-
-  .vision-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 var(--space-xl);
-  }
-
-  .vision-list li {
-    position: relative;
-    padding-left: var(--space-lg);
-    margin-bottom: var(--space-sm);
-    font-size: 0.9375rem;
-    color: var(--color-charcoal-light);
-  }
-
-  .vision-list li::before {
-    content: '+';
-    position: absolute;
-    left: 0;
-    color: var(--color-accent);
-    font-weight: 500;
+  .vision-callout {
+    text-align: center;
+    border-top: 1px solid rgba(212, 135, 58, 0.25);
+    padding-top: var(--space-2xl);
   }
 
   .vision-closing {
-    font-family: var(--font-display);
-    font-size: 1.0625rem;
-    font-style: italic;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: clamp(1.0625rem, 2.4vw, 1.35rem);
     color: var(--color-charcoal);
     margin-bottom: var(--space-md);
   }
 
   .vision-cta {
-    font-size: 0.9375rem;
-    color: var(--color-charcoal);
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    letter-spacing: 0.04em;
+    color: var(--color-accent-dark);
     margin: 0;
   }
 
   @media (min-width: 768px) {
-    .vision {
-      padding: var(--space-4xl) 0;
-    }
-
-    .vision-intro {
-      font-size: 1.0625rem;
-    }
+    .vision { padding-top: var(--space-4xl); }
   }
 
   /* Details Section */
@@ -951,6 +805,9 @@ const eventJsonLd = {
   /* Support Section */
   .support {
     padding: var(--space-3xl) 0;
+    background:
+      radial-gradient(75% 110% at 50% 0%, rgba(230, 168, 92, 0.22), transparent 60%),
+      var(--color-cream-dark);
   }
 
   @media (min-width: 768px) {
@@ -990,14 +847,17 @@ const eventJsonLd = {
   }
 
   .support-card {
-    background: var(--color-cream-dark);
+    background: var(--color-cream);
     padding: var(--space-xl);
+    border: 1px solid rgba(212, 135, 58, 0.25);
+    border-radius: 18px;
   }
 
   .support-card h3 {
     font-family: var(--font-display);
-    font-size: 1.125rem;
-    font-weight: 500;
+    font-size: 1.6rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
     margin-bottom: var(--space-sm);
   }
 
@@ -1033,21 +893,25 @@ const eventJsonLd = {
   }
 
   .bank-label {
-    font-size: 0.6875rem;
-    letter-spacing: 0.08em;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: var(--color-accent-dark);
   }
 
   .bank-value {
     font-size: 0.9375rem;
     color: var(--color-charcoal);
-    font-weight: 500;
+    font-weight: 600;
+    letter-spacing: 0.02em;
   }
 
   /* Footer */
   .footer {
-    background: var(--color-charcoal);
+    background:
+      radial-gradient(90% 130% at 50% 0%, rgba(212, 135, 58, 0.18), transparent 55%),
+      var(--color-charcoal);
     color: var(--color-cream);
     padding: var(--space-3xl) 0 var(--space-xl);
   }
@@ -1060,10 +924,12 @@ const eventJsonLd = {
   }
 
   .footer-cta-text {
-    font-family: var(--font-display);
-    font-size: 1.25rem;
-    font-style: italic;
-    margin: 0 0 var(--space-lg);
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    max-width: 32rem;
+    margin: 0 auto var(--space-lg);
     color: var(--color-cream);
   }
 
@@ -1176,13 +1042,13 @@ const eventJsonLd = {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
+        entry.target.classList.add('is-visible');
         observer.unobserve(entry.target);
       }
     });
   }, observerOptions);
 
-  document.querySelectorAll('[class*="animate-"]').forEach(el => {
+  document.querySelectorAll('.reveal').forEach(el => {
     observer.observe(el);
   });
 </script>
