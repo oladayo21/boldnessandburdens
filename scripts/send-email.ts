@@ -1,6 +1,6 @@
 import { createTransport } from "nodemailer";
 import { parseArgs } from "util";
-import { readFileSync, writeFileSync, existsSync, mkdirSync, copyFileSync } from "fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join, resolve } from "path";
 import { execSync } from "child_process";
 
@@ -10,11 +10,6 @@ const EMAILS_DIR = join(ROOT, "emails");
 const TEMPLATES_DIR = join(EMAILS_DIR, "templates");
 const SENT_LOG_PATH = join(EMAILS_DIR, "sent-log.json");
 const LOCAL_CSV = join(DATA_DIR, "registrants.csv");
-const DOWNLOADS_CSV = join(
-  process.env.HOME || "~",
-  "Downloads",
-  "registration.csv"
-);
 
 const NETLIFY_TOKEN = process.env.NETLIFY_TOKEN;
 const NETLIFY_FORM_ID = process.env.NETLIFY_FORM_ID;
@@ -28,35 +23,16 @@ const { values } = parseArgs({
     to: { type: "string" },
     "dry-run": { type: "boolean", default: false },
     force: { type: "boolean", default: false },
-    sync: { type: "boolean", default: false },
     subject: { type: "string", short: "s" },
     emails: { type: "string" },
   },
   strict: true,
 });
 
-// --- Sync command ---
-
-if (values.sync) {
-  if (!existsSync(DOWNLOADS_CSV)) {
-    console.error(`CSV not found at ${DOWNLOADS_CSV}`);
-    process.exit(1);
-  }
-
-  if (!existsSync(DATA_DIR)) {
-    mkdirSync(DATA_DIR, { recursive: true });
-  }
-
-  copyFileSync(DOWNLOADS_CSV, LOCAL_CSV);
-  console.log(`Synced registrants from Downloads to ${LOCAL_CSV}`);
-  process.exit(0);
-}
-
 // --- Validate template ---
 
 if (!values.template) {
   console.error("Usage: bun scripts/send-email.ts --template <name> [--to email] [--emails a@x,b@x] [--dry-run] [--force]");
-  console.error("       bun scripts/send-email.ts --sync");
   console.error("");
   console.error("Templates available:");
 
@@ -182,21 +158,9 @@ if (values.emails) {
   console.log(`Fetched ${registrants.length} submissions.`);
 } else {
   if (!existsSync(LOCAL_CSV)) {
-    console.log("No local CSV found. Syncing from Downloads...");
-
-    if (!existsSync(DOWNLOADS_CSV)) {
-      console.error(`CSV not found at ${DOWNLOADS_CSV}`);
-      console.error("Set NETLIFY_TOKEN + NETLIFY_FORM_ID in .env to fetch directly,");
-      console.error("or download the CSV from Netlify to ~/Downloads/registration.csv");
-      process.exit(1);
-    }
-
-    if (!existsSync(DATA_DIR)) {
-      mkdirSync(DATA_DIR, { recursive: true });
-    }
-
-    copyFileSync(DOWNLOADS_CSV, LOCAL_CSV);
-    console.log("Synced.");
+    console.error("No local CSV found.");
+    console.error("Set NETLIFY_TOKEN + NETLIFY_FORM_ID in .env to fetch directly.");
+    process.exit(1);
   }
 
   const csvContent = readFileSync(LOCAL_CSV, "utf-8");
@@ -252,6 +216,9 @@ const defaultSubjects: Record<string, string> = {
   "registration-confirmation": "Your BBC'26 Registration is Confirmed",
   "invitation": "You're Invited to BBC'26",
   "general-invitation": "BBC 2026: A Gathering for Everyone Seeking More of God",
+  "90-day-countdown": "90 Days Until We Meet the King!",
+  "preparation-guide": "How to Prepare for BBC 2026",
+  "tshirt-signup": "B&B Conference T-Shirt Sign Up is Open!",
 };
 
 // --- SMTP setup ---
