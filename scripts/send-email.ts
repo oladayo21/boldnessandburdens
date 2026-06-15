@@ -219,6 +219,7 @@ const defaultSubjects: Record<string, string> = {
   "90-day-countdown": "90 Days Until We Meet the King!",
   "preparation-guide": "How to Prepare for BBC 2026",
   "tshirt-signup": "B&B Conference T-Shirt Sign Up is Open!",
+  "venue-change": "Important Update: B&B Conference 2026 Venue Change",
 };
 
 // --- SMTP setup ---
