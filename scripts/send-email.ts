@@ -5,14 +5,14 @@ import { join, resolve } from "path";
 import { execSync } from "child_process";
 
 const ROOT = resolve(import.meta.dirname, "..");
-const DATA_DIR = join(ROOT, "data");
 const EMAILS_DIR = join(ROOT, "emails");
 const TEMPLATES_DIR = join(EMAILS_DIR, "templates");
 const SENT_LOG_PATH = join(EMAILS_DIR, "sent-log.json");
-const LOCAL_CSV = join(DATA_DIR, "registrants.csv");
 
-const NETLIFY_TOKEN = process.env.NETLIFY_TOKEN;
-const NETLIFY_FORM_ID = process.env.NETLIFY_FORM_ID;
+// Single source of truth: the curated D1 roster (the same DB the /bb26 app
+// uses) — no local CSVs and no per-send address corrections.
+const EDITION = "bb26";
+const D1_DATABASE = "bb-conference";
 
 // --- CLI args ---
 
@@ -58,113 +58,92 @@ if (!existsSync(templatePath)) {
 const baseHtml = readFileSync(join(EMAILS_DIR, "base.html"), "utf-8");
 const contentHtml = readFileSync(templatePath, "utf-8");
 
-// --- Load recipients ---
+// --- Load recipients (single source: the D1 `participants` roster) ---
 
-function parseCSV(csv: string): Record<string, string>[] {
-  const lines = csv.trim().split("\n");
-  const headers = lines[0]
-    .split(",")
-    .map((h) => h.replace(/^"|"$/g, "").trim());
-
-  return lines.slice(1).map((line) => {
-    const values: string[] = [];
-    let current = "";
-    let inQuotes = false;
-
-    for (const char of line) {
-      if (char === '"') {
-        inQuotes = !inQuotes;
-      } else if (char === "," && !inQuotes) {
-        values.push(current.trim());
-        current = "";
-      } else {
-        current += char;
-      }
-    }
-
-    values.push(current.trim());
-
-    const record: Record<string, string> = {};
-
-    headers.forEach((header, i) => {
-      record[header] = values[i] || "";
-    });
-
-    return record;
-  });
+interface Registrant {
+  full_name: string;
+  email: string;
+  phone: string;
+  city: string;
+  gender: string;
+  wants_tshirt: string;
+  tshirt_size: string;
+  emergency_contact_name: string;
+  emergency_contact_phone: string;
 }
 
-// --- Netlify API ---
+// Pull the curated roster straight from D1 via wrangler, deduped by email
+// (families share one address, so one send per address). Children have no
+// email and are excluded by the `email IS NOT NULL` filter.
+function fetchFromD1(): Registrant[] {
+  const sql =
+    "SELECT full_name, email, phone, city, gender, wants_tshirt, tshirt_size, " +
+    "emergency_contact_name, emergency_contact_phone " +
+    "FROM participants " +
+    `WHERE edition = '${EDITION}' AND email IS NOT NULL AND trim(email) != '' ` +
+    "ORDER BY participant_code";
 
-interface NetlifySubmission {
-  id: string;
-  data: Record<string, string>;
-  created_at: string;
-}
+  const raw = execSync(
+    `npx wrangler d1 execute ${D1_DATABASE} --remote --json --command ${JSON.stringify(sql)}`,
+    { cwd: ROOT, encoding: "utf-8", stdio: ["ignore", "pipe", "inherit"], maxBuffer: 10 * 1024 * 1024 },
+  );
 
-async function fetchFromNetlify(): Promise<Record<string, string>[]> {
-  const results: Record<string, string>[] = [];
-  let page = 1;
-  const perPage = 100;
+  const start = raw.indexOf("[");
 
-  while (true) {
-    const res = await fetch(
-      `https://api.netlify.com/api/v1/forms/${NETLIFY_FORM_ID}/submissions?per_page=${perPage}&page=${page}`,
-      { headers: { Authorization: `Bearer ${NETLIFY_TOKEN}` } }
-    );
-
-    if (!res.ok) {
-      throw new Error(`Netlify API error: ${res.status} ${res.statusText}`);
-    }
-
-    const submissions: NetlifySubmission[] = await res.json();
-
-    if (submissions.length === 0) break;
-
-    for (const sub of submissions) {
-      results.push({
-        full_name: sub.data.full_name || sub.data.name || "",
-        email: sub.data.email || "",
-        phone: sub.data.phone || "",
-        city: sub.data.city || "",
-        gender: sub.data.gender || "",
-        wants_tshirt: sub.data.wants_tshirt || "no",
-        tshirt_size: sub.data.tshirt_size || "",
-        emergency_contact_name: sub.data.emergency_contact_name || "",
-        emergency_contact_phone: sub.data.emergency_contact_phone || "",
-      });
-    }
-
-    if (submissions.length < perPage) break;
-
-    page++;
+  if (start === -1) {
+    throw new Error(`Unexpected wrangler output:\n${raw}`);
   }
 
-  return results;
+  const rows = (JSON.parse(raw.slice(start))[0]?.results ?? []) as Record<string, string | null>[];
+
+  const byEmail = new Map<string, Registrant>();
+
+  for (const row of rows) {
+    const email = (row.email ?? "").trim().toLowerCase();
+
+    if (!email || byEmail.has(email)) {
+      continue;
+    }
+
+    byEmail.set(email, {
+      full_name: row.full_name ?? "Participant",
+      email,
+      phone: row.phone ?? "",
+      city: row.city ?? "",
+      gender: row.gender ?? "",
+      wants_tshirt: row.wants_tshirt ?? "no",
+      tshirt_size: row.tshirt_size ?? "",
+      emergency_contact_name: row.emergency_contact_name ?? "",
+      emergency_contact_phone: row.emergency_contact_phone ?? "",
+    });
+  }
+
+  return [...byEmail.values()];
 }
 
-// --- Load recipients ---
+function blankRegistrant(email: string): Registrant {
+  return {
+    full_name: "Friend",
+    email: email.trim().toLowerCase(),
+    phone: "",
+    city: "",
+    gender: "",
+    wants_tshirt: "no",
+    tshirt_size: "",
+    emergency_contact_name: "",
+    emergency_contact_phone: "",
+  };
+}
 
-let registrants: Record<string, string>[];
+let registrants: Registrant[];
 
 if (values.emails) {
-  registrants = values.emails.split(",").map((e) => ({
-    email: e.trim(),
-    full_name: "Friend",
-  }));
-} else if (NETLIFY_TOKEN && NETLIFY_FORM_ID) {
-  console.log("Fetching registrants from Netlify API...");
-  registrants = await fetchFromNetlify();
-  console.log(`Fetched ${registrants.length} submissions.`);
+  // Ad-hoc override: send to an explicit comma-separated list (still deduped).
+  registrants = values.emails.split(",").map((e) => blankRegistrant(e));
 } else {
-  if (!existsSync(LOCAL_CSV)) {
-    console.error("No local CSV found.");
-    console.error("Set NETLIFY_TOKEN + NETLIFY_FORM_ID in .env to fetch directly.");
-    process.exit(1);
-  }
-
-  const csvContent = readFileSync(LOCAL_CSV, "utf-8");
-  registrants = parseCSV(csvContent);
+  console.log(`Loading roster from D1 (${D1_DATABASE}, edition ${EDITION})...`);
+  registrants = fetchFromD1();
+  console.log(`Loaded ${registrants.length} unique recipients.`);
 }
 
 // --- Sent log ---
@@ -267,7 +246,8 @@ const fromAddress = process.env.SMTP_FROM || "info@boldnessandburdens.com";
 let recipients = registrants;
 
 if (values.to) {
-  recipients = registrants.filter((r) => r.email === values.to);
+  const target = values.to.trim().toLowerCase();
+  recipients = registrants.filter((r) => r.email === target);
 
   if (recipients.length === 0) {
     console.error(`No registrant found with email: ${values.to}`);

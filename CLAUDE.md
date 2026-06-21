@@ -52,9 +52,6 @@ Sends branded emails to registrants via SMTP. Runs locally with Bun.
 ### Commands
 
 ```bash
-# Sync latest CSV from Downloads
-bun scripts/send-email.ts --sync
-
 # Preview confirmation emails (no send)
 bun scripts/send-email.ts --template registration-confirmation --dry-run
 
@@ -85,7 +82,7 @@ scripts/
 └── send-email.ts                      # CLI send script
 
 data/
-└── registrants.csv                    # Local copy of Netlify CSV (gitignored)
+└── archive/                           # Archived raw form exports (csv/xlsx/pdf) — superseded by D1
 ```
 
 ### Adding new email templates
@@ -101,11 +98,16 @@ Copy `.env.example` to `.env` and fill in SMTP credentials.
 
 ### Registrant data
 
-CSV is exported from Netlify Forms. Sync to local with `--sync`.
-The script auto-syncs on first run if no local copy exists.
+The curated roster lives in the D1 database `bb-conference` (binding `DB`,
+edition `bb26`) — the same DB that powers the `/bb26` conference app. One row
+per person in `participants`; families share an email and children have
+`is_child=1` with no email. `send-email.ts` reads the roster directly from D1
+via `npx wrangler d1 execute bb-conference --remote --json`, deduped by email
+(one send per unique address; children with no email are excluded). Archived
+raw form exports are under `data/archive/`.
 
 ## Notes
 
-- Form submission handled by Netlify Forms (`data-netlify="true"`)
+- Registration is closed; the form no longer posts to a third-party forms service (site runs on Cloudflare Workers)
 - Images from Unsplash (prayer/worship theme)
 - Contact: info@boldnessandburdens.com
