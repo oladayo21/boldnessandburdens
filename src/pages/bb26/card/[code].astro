@@ -1,0 +1,487 @@
+---
+export const prerender = false;
+
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { edition } from "../../../config/editions/bb26";
+import { getCard } from "../../../lib/db";
+
+const { code } = Astro.params;
+const card = code ? await getCard(code) : null;
+
+if (!card) {
+  Astro.response.status = 404;
+}
+
+const fields = card
+  ? [
+      { label: "Room", value: card.room },
+      { label: "Group", value: card.group },
+      { label: "Meals", value: card.eating },
+    ]
+  : [];
+---
+
+<BaseLayout
+  title={card ? `${card.name} · ${edition.shortName} Pass` : `Pass not found · ${edition.shortName}`}
+  noindex={true}
+  transparentHeader={true}
+>
+  <main class="scene">
+    <div class="scene__spot" aria-hidden="true"></div>
+
+    {card ? (
+      <div class="layout">
+        <div class="hang">
+        <!-- neck lanyard converging into the slot -->
+        <span class="strap strap--l" aria-hidden="true"></span>
+        <span class="strap strap--r" aria-hidden="true"></span>
+        <span class="clasp" aria-hidden="true"></span>
+
+        <article class="pass">
+          <span class="pass__slot" aria-hidden="true"></span>
+
+          <div class="pass__leather">
+            <img class="brandmark" src="/logo-white.png" alt="Boldness & Burdens Conference" width="600" height="630" />
+            <p class="pass__role">Participant</p>
+            <p class="pass__sub">{edition.name}</p>
+            {card.checkedIn && <span class="checkin">✓ Checked in</span>}
+          </div>
+
+          <div class="pass__panel">
+            <h1 class="pass__name">{card.name}</h1>
+            <p class="pass__id">{card.code}</p>
+
+            <dl class="pass__rows">
+              {fields.map((f) => (
+                <div class={`prow ${f.value ? "" : "prow--empty"}`}>
+                  <dt>{f.label}</dt>
+                  <dd>{f.value ?? "TBA"}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <p class="pass__tag">School of the Spirit &middot; Berlin &middot; {edition.dates}</p>
+          </div>
+        </article>
+        </div>
+
+        <nav class="links" aria-label="Conference information">
+          <a class="qlink" href="/bb26/rules">
+            <span class="qlink__ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="8" y="3" width="8" height="4" rx="1" />
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+                <path d="M9 12h6M9 16h6" />
+              </svg>
+            </span>
+            <span class="qlink__txt"><b>Conference Rules</b><small>Camp guidelines</small></span>
+            <span class="qlink__arr" aria-hidden="true">→</span>
+          </a>
+
+          <a class="qlink" href="/bb26/programme">
+            <span class="qlink__ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3 2" />
+              </svg>
+            </span>
+            <span class="qlink__txt"><b>Order of Programme</b><small>Daily schedule</small></span>
+            <span class="qlink__arr" aria-hidden="true">→</span>
+          </a>
+
+          <a class="qlink" href="/bb26/giving">
+            <span class="qlink__ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.8 8.6c0 4.5-7.2 9.4-8.5 10.2a.6.6 0 0 1-.6 0C10.4 18 3.2 13.1 3.2 8.6 3.2 6 5.1 4 7.5 4c1.6 0 3.1.9 3.9 2.3a.7.7 0 0 0 1.2 0C13.4 4.9 14.9 4 16.5 4c2.4 0 4.3 2 4.3 4.6Z" />
+              </svg>
+            </span>
+            <span class="qlink__txt"><b>Giving</b><small>Support the conference</small></span>
+            <span class="qlink__arr" aria-hidden="true">→</span>
+          </a>
+
+          <a class="qlink" href="/bb26/meals">
+            <span class="qlink__ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 3v7a2 2 0 0 0 2 2v9M7 3v6M9 3v6M9 3v0" />
+                <path d="M18 3c-1.4 0-2.6 1.7-2.6 4s1.2 4 2.6 4v9" />
+              </svg>
+            </span>
+            <span class="qlink__txt"><b>Meal Timetable</b><small>Mealtimes &amp; groups</small></span>
+            <span class="qlink__arr" aria-hidden="true">→</span>
+          </a>
+        </nav>
+      </div>
+    ) : (
+      <div class="hang">
+        <span class="strap strap--l" aria-hidden="true"></span>
+        <span class="strap strap--r" aria-hidden="true"></span>
+        <span class="clasp" aria-hidden="true"></span>
+        <article class="pass pass--void">
+          <span class="pass__slot" aria-hidden="true"></span>
+          <div class="pass__leather pass__leather--void">
+            <img class="brandmark brandmark--void" src="/logo-white.png" alt="" width="600" height="630" />
+            <p class="pass__role">Void</p>
+            <p class="pass__sub">Pass not found</p>
+          </div>
+          <div class="pass__panel">
+            <h1 class="pass__name pass__name--void">No match</h1>
+            <p class="pass__voidtext">We couldn't find that pass.</p>
+            <a href="/bb26" class="btn btn--primary">Back to search</a>
+          </div>
+        </article>
+      </div>
+    )}
+  </main>
+</BaseLayout>
+
+<style>
+  /* Brand fonts (Bebas Neue display + Outfit body) load via global.css. */
+
+  .scene {
+    --leather: #232020;
+    --leather-2: #14110f;
+    --panel: #fbf8f2;
+    --gold-1: #f7e7ad;
+    --gold-2: #d8b256;
+    --gold-3: #9c7322;
+    --display: var(--font-display); /* Bebas Neue */
+
+    position: relative;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: clamp(96px, 16vh, 160px) var(--space-md) var(--space-2xl);
+    overflow: hidden;
+  }
+
+  /* warm spotlight pooling behind the pass */
+  .scene__spot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(120vw, 760px);
+    height: min(120vh, 820px);
+    transform: translate(-50%, -54%);
+    background: radial-gradient(closest-side, rgba(212, 135, 58, 0.20), rgba(212, 135, 58, 0.05) 55%, transparent 72%);
+    pointer-events: none;
+  }
+
+  .layout {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(28px, 5vw, 56px);
+    width: 100%;
+    max-width: 740px;
+  }
+
+  .hang {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(360px, 86vw);
+    flex: 0 0 auto;
+  }
+
+  /* ---- side quick links (flat list, no cards) ---- */
+  .links {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 250px;
+    max-width: 320px;
+    min-width: 240px;
+    border-top: 1px solid #e3d6bd;
+    z-index: 3;
+  }
+
+  .qlink {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 4px;
+    color: #241a12;
+    border-bottom: 1px solid #e3d6bd;
+  }
+
+  .qlink__ico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    color: var(--gold-3);
+    transition: color 0.25s var(--ease-out);
+  }
+
+  .qlink__ico svg { width: 24px; height: 24px; }
+
+  .qlink__txt { display: flex; flex-direction: column; line-height: 1.1; flex: 1; }
+
+  .qlink__txt b {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 1.2rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: color 0.25s var(--ease-out);
+  }
+
+  .qlink__txt small {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    color: var(--color-charcoal-light);
+    margin-top: 3px;
+  }
+
+  .qlink__arr {
+    font-family: var(--font-body);
+    color: var(--gold-3);
+    font-size: 1.1rem;
+    transition: transform 0.25s var(--ease-out);
+  }
+
+  .qlink:hover .qlink__txt b,
+  .qlink:focus .qlink__txt b,
+  .qlink:hover .qlink__ico,
+  .qlink:focus .qlink__ico {
+    color: var(--color-accent-dark);
+  }
+
+  .qlink:hover .qlink__arr,
+  .qlink:focus .qlink__arr {
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 680px) {
+    .links { flex-basis: 100%; max-width: min(360px, 86vw); }
+  }
+
+  /* ---- lanyard straps (flat woven ribbons that diverge up to the neck) ---- */
+  .strap {
+    position: absolute;
+    left: 50%;
+    top: -100vh;
+    height: calc(100vh + 42px); /* bottom tucks behind the card near the clasp */
+    width: 30px;
+    background: #b9641f;
+    transform-origin: bottom center;
+    z-index: 2;
+    border-radius: 3px;
+  }
+
+  .strap--l { transform: translateX(-50%) rotate(-13deg); }
+  .strap--r { transform: translateX(-50%) rotate(13deg); }
+
+  /* metal clasp holding the straps to the slot */
+  .clasp {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 22px;
+    border-radius: 4px;
+    background: #b9b3a6;
+    z-index: 5;
+  }
+
+  /* ---- the pass ---- */
+  .pass {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 213 / 338;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--leather);
+    border: 1px solid #e3d6bd;
+    transform-origin: 50% 22px; /* swing from the slot */
+    z-index: 3;
+    animation: drop 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* lanyard slot, drawn over the strap ends so they read as threaded */
+  .pass__slot {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 84px;
+    height: 16px;
+    border-radius: 999px;
+    background: #0c0a09;
+    z-index: 4;
+  }
+
+  /* ---- dark leather upper area ---- */
+  .pass__leather {
+    position: relative;
+    height: 60%;
+    padding: 44px 26px 0;
+    text-align: center;
+    color: #f4efe6;
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(255, 255, 255, 0.06), transparent 60%),
+      linear-gradient(180deg, var(--leather) 0%, var(--leather-2) 100%);
+  }
+
+  /* fine leather grain */
+  .pass__leather::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.16;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+
+  /* official flame logo on the leather */
+  .brandmark {
+    display: block;
+    width: clamp(118px, 33vw, 146px);
+    height: auto;
+    margin: -16px auto -8px;
+  }
+
+  .brandmark--void { opacity: 0.55; filter: grayscale(0.4); }
+
+  .pass__role {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(2.1rem, 10vw, 2.8rem);
+    line-height: 0.9;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-indent: 0.08em; /* balance the tracking */
+    white-space: nowrap;
+  }
+
+  .pass__sub {
+    margin: 12px 0 0;
+    font-family: var(--font-body);
+    font-size: 0.64rem;
+    font-weight: 500;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--gold-2);
+  }
+
+  .checkin {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 4px 12px;
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #1c2a1c;
+    background: #b3d693;
+    border-radius: 999px;
+  }
+
+  /* ---- white info panel ---- */
+  .pass__panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 44%;
+    background: var(--panel);
+    padding: 26px 22px 22px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .pass__name {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(2.1rem, 9.5vw, 2.7rem);
+    line-height: 0.9;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #211a12;
+  }
+
+  .pass__name--void { letter-spacing: 0.04em; }
+
+  .pass__id {
+    margin: 8px 0 0;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    color: var(--gold-3);
+  }
+
+  .pass__rows {
+    margin: 22px 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 18px 0 0;
+    border-top: 1px solid #ece2d0;
+  }
+
+  .prow dt {
+    font-family: var(--font-body);
+    font-size: 0.54rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b39a72;
+    margin-bottom: 4px;
+  }
+
+  .prow dd {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 1.55rem;
+    line-height: 0.95;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #2a2016;
+    word-break: break-word;
+  }
+
+  .prow--empty dd { color: #cdbfa6; }
+
+  .pass__tag {
+    margin: 18px 0 0;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    color: #a08a68;
+  }
+
+  /* ---- void ---- */
+  .pass__leather--void { color: #f3e7e7; }
+  .pass__voidtext { color: #6f6356; margin: 8px 0 18px; font-size: 0.9rem; }
+
+  /* ---- motion ---- */
+  @keyframes drop {
+    0% { transform: translateY(-26px) rotate(-7deg); opacity: 0; }
+    40% { opacity: 1; }
+    60% { transform: translateY(0) rotate(5deg); }
+    80% { transform: rotate(-2.5deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pass { animation: none; }
+  }
+
+  @media (max-height: 720px) {
+    .scene { padding-top: 88px; }
+    .hang { width: min(320px, 84vw); }
+  }
+</style>

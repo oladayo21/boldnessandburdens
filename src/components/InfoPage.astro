@@ -1,0 +1,153 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { edition } from "../config/editions/bb26";
+
+interface Props {
+  title: string;
+  intro?: string;
+}
+
+const { title, intro } = Astro.props;
+---
+
+<BaseLayout title={`${title} · ${edition.shortName}`} noindex={true} transparentHeader={true}>
+  <main class="info">
+    <div class="info__spot" aria-hidden="true"></div>
+
+    <article class="info__inner">
+      <a class="info__back" href="/bb26" data-back>← Back to your pass</a>
+      <p class="info__eyebrow">{edition.shortName}</p>
+      <h1 class="info__title">{title}</h1>
+      {intro && <p class="info__intro">{intro}</p>}
+
+      <div class="info__body">
+        <slot />
+      </div>
+    </article>
+  </main>
+</BaseLayout>
+
+<script>
+  // Return to the exact badge the visitor came from, when possible.
+  const back = document.querySelector<HTMLAnchorElement>("[data-back]");
+
+  back?.addEventListener("click", (e) => {
+    if (document.referrer.includes("/bb26/card/")) {
+      e.preventDefault();
+      history.back();
+    }
+  });
+</script>
+
+<style>
+  .info {
+    position: relative;
+    min-height: 100dvh;
+    padding: clamp(40px, 8vh, 88px) var(--space-md) var(--space-3xl);
+    overflow: hidden;
+  }
+
+  .info__spot {
+    position: absolute;
+    top: -160px;
+    left: 50%;
+    width: min(120vw, 640px);
+    height: 520px;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgba(212, 135, 58, 0.16), transparent 70%);
+    pointer-events: none;
+  }
+
+  .info__inner {
+    position: relative;
+    width: min(640px, 100%);
+    margin: 0 auto;
+  }
+
+  .info__back {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    color: var(--color-charcoal-light);
+    margin-bottom: var(--space-xl);
+  }
+
+  .info__back:hover { color: var(--color-accent-dark); }
+
+  .info__eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--color-accent-dark);
+    margin: 0 0 var(--space-sm);
+  }
+
+  .info__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 11vw, 4rem);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    color: var(--color-charcoal);
+    margin: 0;
+  }
+
+  .info__intro {
+    margin: var(--space-md) 0 0;
+    max-width: 52ch;
+    color: var(--color-charcoal-light);
+    font-size: 1.05rem;
+  }
+
+  .info__body {
+    margin-top: var(--space-2xl);
+  }
+
+  /* slot content (unscoped) */
+  .info__body :global(h2) {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    letter-spacing: 0.04em;
+    color: var(--color-charcoal);
+    margin: var(--space-xl) 0 var(--space-sm);
+  }
+
+  .info__body :global(p) {
+    color: var(--color-charcoal-light);
+    margin: 0 0 var(--space-md);
+  }
+
+  .info__body :global(ul) {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-md);
+  }
+
+  .info__body :global(li) {
+    padding: 10px 0 10px 22px;
+    position: relative;
+    border-bottom: 1px solid var(--color-cream-dark);
+    color: var(--color-charcoal-light);
+  }
+
+  .info__body :global(li)::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 18px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-accent);
+  }
+
+  .info__body :global(.note) {
+    padding: var(--space-lg);
+    background: var(--color-cream-dark);
+    border-radius: 14px;
+    color: var(--color-charcoal-light);
+    font-size: 0.95rem;
+  }
+</style>

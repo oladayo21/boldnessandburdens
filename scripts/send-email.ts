@@ -245,6 +245,7 @@ const defaultSubjects: Record<string, string> = {
   "tshirt-signup": "B&B Conference T-Shirt Sign Up is Open!",
   "venue-change": "Important Update: B&B Conference 2026 Venue Change",
   "30-day-countdown": "30 Days to Go — Boldness & Burdens Conference 2026",
+  "tshirt-closing-reminder": "BBC 2026 T-Shirt Orders Close Tomorrow!",
 };
 
 // --- SMTP setup ---

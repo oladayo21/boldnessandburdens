@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bb-conference",
+  // Astro 6 / @astrojs/cloudflare v13: main points to the adapter's unified
+  // entrypoint; the assets dir/binding is auto-configured by the adapter.
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "compatibility_date": "2026-06-20",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "bb-conference",
+      "database_id": "540de1ca-8587-4e06-a379-f716e6e6f410"
+    }
+  ]
+  // Domain cutover (do at the end): add custom domains so the Worker serves the
+  // live site. DNS is already on Cloudflare.
+  // "routes": [
+  //   { "pattern": "boldnessandburdens.com", "custom_domain": true },
+  //   { "pattern": "www.boldnessandburdens.com", "custom_domain": true }
+  // ]
+}

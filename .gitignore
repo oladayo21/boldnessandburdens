@@ -2,8 +2,16 @@
 dist/
 # generated types
 .astro/
-# netlify adapter output
+# cloudflare / wrangler
+.wrangler/
+worker-configuration.d.ts
+.dev.vars
+
+# legacy netlify adapter artifacts
 .netlify/
+
+# local agent / editor config
+.claude/
 
 # dependencies
 node_modules/

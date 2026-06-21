@@ -1,0 +1,237 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { edition } from "../../config/editions/bb26";
+
+const bank = [
+  { label: "Beneficiary", value: "Helen Chijioke" },
+  { label: "IBAN", value: "DE22 1001 0178 3877 6363 76" },
+  { label: "BIC / SWIFT", value: "REVODEB2" },
+  { label: "Correspondent BIC", value: "CHASDEFX" },
+];
+
+const paypal = "https://www.paypal.me/HeyMakhel";
+---
+
+<BaseLayout
+  title={`Giving · ${edition.shortName}`}
+  description="Support the Boldness & Burdens Conference."
+  noindex={true}
+  transparentHeader={true}
+>
+  <main class="give">
+    <div class="give__spot" aria-hidden="true"></div>
+
+    <section class="give__inner">
+      <a href="/" class="give__home" aria-label="Boldness & Burdens — home">
+        <img src="/logo-black.png" alt="Boldness & Burdens Conference" width="600" height="630" />
+      </a>
+      <h1 class="give__title">Give</h1>
+
+      <div class="give__cols">
+        <section class="give__col">
+          <h2 class="give__h">PayPal</h2>
+          <img class="give__qr" src="/paypal-qr.svg" alt="QR code that opens PayPal" width="200" height="200" />
+          <a class="give__link" href={paypal} target="_blank" rel="noopener noreferrer">paypal.me/HeyMakhel</a>
+        </section>
+
+        <section class="give__col">
+          <h2 class="give__h">Bank transfer</h2>
+          <div class="bankcard">
+            <ul class="give__bank">
+              {bank.map((b) => (
+                <li class="brow">
+                  <div class="brow__text">
+                    <span class="brow__label">{b.label}</span>
+                    <span class="brow__value">{b.value}</span>
+                  </div>
+                  <button class="brow__btn" type="button" data-copy={b.value} aria-label={`Copy ${b.label}`}>
+                    <svg class="ico ico--copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect x="9" y="9" width="11" height="11" rx="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                    <svg class="ico ico--check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>(".brow__btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy ?? "");
+      } catch {
+        return;
+      }
+
+      btn.classList.add("is-copied");
+      setTimeout(() => btn.classList.remove("is-copied"), 1600);
+    });
+  });
+</script>
+
+<style>
+  .give {
+    position: relative;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(40px, 8vh, 88px) var(--space-md) var(--space-3xl);
+    overflow: hidden;
+  }
+
+  .give__spot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(120vw, 760px);
+    height: min(110vh, 720px);
+    transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, rgba(212, 135, 58, 0.14), transparent 70%);
+    pointer-events: none;
+  }
+
+  .give__inner {
+    position: relative;
+    width: min(680px, 100%);
+    text-align: center;
+  }
+
+  .give__home { display: inline-block; }
+
+  .give__home img { display: block; width: 130px; height: auto; margin: 0 auto -8px; }
+
+  .give__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 11vw, 3.6rem);
+    line-height: 0.9;
+    letter-spacing: 0.03em;
+    color: var(--color-charcoal);
+    margin: 0 0 var(--space-2xl);
+  }
+
+  /* ---- side by side, stack on mobile ---- */
+  .give__cols {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: clamp(36px, 7vw, 72px);
+  }
+
+  .give__col {
+    flex: 1 1 240px;
+    max-width: 300px;
+  }
+
+  .give__h {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-charcoal);
+    margin: 0 0 var(--space-lg);
+  }
+
+  .give__qr {
+    display: block;
+    width: clamp(170px, 46vw, 200px);
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .give__link {
+    display: inline-block;
+    margin-top: var(--space-md);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    color: var(--gold-3, #9c7322);
+    word-break: break-all;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .give__link:hover { color: var(--color-accent-dark); }
+
+  /* subtle bank card */
+  .bankcard {
+    text-align: left;
+    background: #fdfbf6;
+    border: 1px solid #e7dcc6;
+    border-radius: 16px;
+    padding: 2px 18px;
+  }
+
+  .give__bank {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .brow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 0;
+    border-bottom: 1px solid #ece2d0;
+  }
+
+  .brow:last-child { border-bottom: none; }
+
+  .brow__text { flex: 1; min-width: 0; }
+
+  .brow__label {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-charcoal-light);
+    margin-bottom: 3px;
+  }
+
+  .brow__value {
+    display: block;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    color: var(--color-charcoal);
+    word-break: break-word;
+  }
+
+  .brow__btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--gold-3, #9c7322);
+    cursor: pointer;
+    transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
+  }
+
+  .brow__btn:hover { background: #f3e9d4; color: var(--color-accent-dark); }
+
+  .brow__btn .ico { width: 18px; height: 18px; }
+
+  .ico--check { display: none; color: var(--color-success); }
+
+  .brow__btn.is-copied .ico--copy { display: none; }
+
+  .brow__btn.is-copied .ico--check { display: inline; }
+</style>
