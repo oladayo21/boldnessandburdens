@@ -1,5 +1,5 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { edition } from "../../config/editions/bb26";
@@ -107,13 +107,13 @@ const wings = [
 ];
 ---
 
-<BaseLayout title={`Room Einteilung · ${edition.shortName}`} noindex={true} transparentHeader={true}>
+<BaseLayout title={`Room Allocation · ${edition.shortName}`} noindex={true} transparentHeader={true}>
   <main class="prop">
     <header class="prop__head">
       <img class="prop__logo" src="/logo-black.png" alt="Boldness & Burdens Conference" width="600" height="630" />
       <div class="prop__heading">
         <p class="prop__eyebrow">{edition.shortName} · Accommodation</p>
-        <h1 class="prop__title">Room Einteilung</h1>
+        <h1 class="prop__title">Room Allocation</h1>
       </div>
       <span class="prop__draft">Proposal · Draft</span>
     </header>
@@ -415,5 +415,30 @@ const wings = [
     font-size: 0.8rem;
     color: var(--color-charcoal-light);
     text-align: center;
+  }
+
+  @media (max-width: 600px) {
+    .prop__head {
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+
+    .prop__logo { width: 48px; }
+
+    /* badge drops to its own line, left-aligned, no longer pinned right */
+    .prop__draft {
+      margin-left: 0;
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      padding: 4px 10px;
+    }
+
+    /* even stat tiles instead of a lopsided 4 + 1 wrap */
+    .prop__stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .prop__stats li { min-width: 0; }
   }
 </style>

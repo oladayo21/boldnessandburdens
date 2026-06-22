@@ -13,16 +13,22 @@ import {
 
 let loginError = "";
 
+// Only allow redirecting back to local /bb26 pages after login.
+function safeNext(value: string | null): string {
+  return value && value.startsWith("/bb26/") ? value : "/bb26/admin";
+}
+
 // Handle login POST.
 if (Astro.request.method === "POST") {
   const form = await Astro.request.formData();
   const password = String(form.get("password") ?? "");
+  const dest = safeNext(String(form.get("next") ?? ""));
 
   if (checkPassword(password)) {
     return new Response(null, {
       status: 303,
       headers: {
-        location: "/bb26/admin",
+        location: dest,
         "set-cookie": sessionCookie(Astro.request),
       },
     });
@@ -31,6 +37,7 @@ if (Astro.request.method === "POST") {
   loginError = "Incorrect password.";
 }
 
+const next = safeNext(Astro.url.searchParams.get("next"));
 const configured = isConfigured();
 const authed = isAuthed(Astro.request);
 const participants = authed ? await listParticipants() : [];
@@ -58,6 +65,7 @@ const saved = Astro.url.searchParams.get("saved");
         <h1 class="gate__title">Sign in</h1>
         {loginError && <p class="gate__error">{loginError}</p>}
         <form method="POST" class="gate__form">
+          <input type="hidden" name="next" value={next} />
           <input
             id="password"
             name="password"
