@@ -78,7 +78,7 @@ export async function listParticipants(): Promise<ParticipantAdminRow[]> {
             room_number, group_name, staying_on_camp
        FROM participants
       WHERE edition = ?
-      ORDER BY participant_code`,
+      ORDER BY full_name COLLATE NOCASE`,
   )
     .bind(edition.id)
     .all<{
