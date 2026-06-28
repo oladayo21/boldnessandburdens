@@ -383,7 +383,9 @@
   .btn--primary[disabled] { opacity: 0.6; cursor: default; }
 
   @media (max-width: 540px) {
-    .profile { flex-direction: column-reverse; align-items: flex-start; }
+    .profile { align-items: flex-start; gap: var(--ad-3); }
+    .profile__name { font-size: 1.4rem; }
+    .qr { width: 84px; }
     .grid { grid-template-columns: 1fr; }
   }
 </style>
