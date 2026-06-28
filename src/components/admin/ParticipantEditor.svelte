@@ -51,6 +51,7 @@
   let busyDay = $state<string | null>(null);
   let toastMsg = $state("");
   let toastKind = $state<"ok" | "err">("ok");
+  let qrDialog: HTMLDialogElement;
 
   const attendedCount = $derived(Object.keys(attendance).length);
 
@@ -147,11 +148,36 @@
       </div>
     </div>
 
-    <a class="qr" href={badgeHref} target="_blank" rel="noopener" aria-label={`Open ${participant.name}'s badge`}>
+    <button
+      type="button"
+      class="qr"
+      onclick={() => qrDialog.showModal()}
+      aria-label={`Enlarge ${participant.name}'s badge QR to scan`}
+    >
       <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       {@html badgeQr}
-    </a>
+    </button>
   </header>
+
+  <dialog
+    bind:this={qrDialog}
+    class="qrmodal"
+    onclick={(e) => {
+      if (e.target === qrDialog) qrDialog.close();
+    }}
+  >
+    <div class="qrmodal__card">
+      <div class="qrmodal__qr">
+        <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+        {@html badgeQr}
+      </div>
+      <p class="qrmodal__cap">{participant.name} · {participant.code}</p>
+      <div class="qrmodal__actions">
+        <a class="btn" href={badgeHref} target="_blank" rel="noopener">Open badge page</a>
+        <button type="button" class="btn btn--primary" onclick={() => qrDialog.close()}>Done</button>
+      </div>
+    </div>
+  </dialog>
 
   <div class="arrival" class:is-in={participant.arrived}>
     <span class="arrival__eyebrow">Conference check-in</span>
@@ -242,10 +268,46 @@
     background: #fff;
     border: 1px solid var(--ad-border);
     border-radius: var(--ad-r);
+    cursor: pointer;
     transition: border-color 0.15s var(--ad-ease);
   }
   .qr :global(svg) { display: block; width: 100%; height: auto; }
   .qr:hover { border-color: var(--ad-accent); }
+  .qr:focus-visible { outline: 2px solid var(--ad-accent); outline-offset: 2px; }
+
+  /* ---- QR lightbox (scan from across a desk) ---- */
+  .qrmodal {
+    margin: auto;
+    padding: 0;
+    border: none;
+    background: transparent;
+    max-width: none;
+    max-height: none;
+  }
+  .qrmodal::backdrop {
+    background: rgba(17, 24, 39, 0.62);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+  }
+  .qrmodal__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ad-4);
+    padding: var(--ad-6);
+    background: #fff;
+    border-radius: var(--ad-r-lg);
+  }
+  .qrmodal__qr { width: min(78vw, 78vh, 460px); }
+  .qrmodal__qr :global(svg) { display: block; width: 100%; height: auto; }
+  .qrmodal__cap {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ad-text-2);
+    text-align: center;
+  }
+  .qrmodal__actions { display: flex; gap: var(--ad-2); }
 
   /* ---- conference check-in (read-only; set on the roster) ---- */
   .arrival {
