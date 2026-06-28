@@ -1,7 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from "astro";
-import { updateAssignment } from "../../../../lib/db";
+import { updateParticipant } from "../../../../lib/db";
 import { isAuthed } from "../../../../lib/admin-auth";
 
 export const POST: APIRoute = async ({ request }) => {
@@ -22,15 +22,17 @@ export const POST: APIRoute = async ({ request }) => {
     return s.length ? s : null;
   };
 
-  await updateAssignment(code, {
+  await updateParticipant(code, {
     room: clean(form.get("room")),
     group: clean(form.get("group")),
-    eating: clean(form.get("eating")),
-    checkedIn: form.get("checked_in") != null,
+    email: clean(form.get("email")),
+    phone: clean(form.get("phone")),
+    city: clean(form.get("city")),
+    stayingOnCamp: form.get("staying_on_camp") != null,
   });
 
   return new Response(null, {
     status: 303,
-    headers: { location: `/bb26/admin?saved=${encodeURIComponent(code)}` },
+    headers: { location: `/bb26/admin/${encodeURIComponent(code)}?saved=${encodeURIComponent(code)}` },
   });
 };

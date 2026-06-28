@@ -1,9 +1,9 @@
 ---
 export const prerender = false;
 
-import BaseLayout from "../../../layouts/BaseLayout.astro";
-import { edition } from "../../../config/editions/bb26";
-import { getCard } from "../../../lib/db";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { edition } from "../../config/editions/bb26";
+import { getCard } from "../../lib/db";
 
 const { code } = Astro.params;
 const card = code ? await getCard(code) : null;
@@ -14,11 +14,30 @@ if (!card) {
 
 const fields = card
   ? [
-      { label: "Room", value: card.room },
+      { label: "Dormitory", value: card.room },
       { label: "Group", value: card.group },
-      { label: "Meals", value: card.eating },
     ]
   : [];
+
+const attendedCount = card ? Object.keys(card.attendance).length : 0;
+
+// Today's date on the Berlin wall clock, matched against edition.days.
+// timeZone picks the day; "en-CA" is only a formatting locale — it yields the
+// YYYY-MM-DD shape we compare on (not a country choice).
+const todayBerlin = new Date().toLocaleDateString("en-CA", {
+  timeZone: "Europe/Berlin",
+});
+const todayDay = edition.days.find((d) => d.date === todayBerlin) ?? null;
+const checkedInToday = card ? card.attendance[todayBerlin] ?? null : null;
+
+// checked_in_at is stored UTC; show the clock time in Berlin.
+function fmtTime(ts: string): string {
+  return new Date(ts.replace(" ", "T") + "Z").toLocaleTimeString("en-GB", {
+    timeZone: "Europe/Berlin",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 ---
 
 <BaseLayout
@@ -30,6 +49,7 @@ const fields = card
     <div class="scene__spot" aria-hidden="true"></div>
 
     {card ? (
+      <Fragment>
       <div class="layout">
         <div class="hang">
         <!-- neck lanyard converging into the slot -->
@@ -44,7 +64,7 @@ const fields = card
             <img class="brandmark" src="/logo-white.png" alt="Boldness & Burdens Conference" width="600" height="630" />
             <p class="pass__role">Participant</p>
             <p class="pass__sub">{edition.name}</p>
-            {card.checkedIn && <span class="checkin">✓ Checked in</span>}
+            {attendedCount > 0 && <span class="checkin">✓ {attendedCount}/{edition.days.length} days</span>}
           </div>
 
           <div class="pass__panel">
@@ -64,6 +84,31 @@ const fields = card
           </div>
         </article>
         </div>
+
+        <div class="sidebar">
+        <section class="checkin-panel" aria-label="Daily check-in">
+          <h2 class="checkin-panel__title">Daily check-in</h2>
+
+          {todayDay ? (
+            <Fragment>
+              <p class="checkin-panel__date">Today · {todayDay.long}</p>
+              {checkedInToday ? (
+                <p class="checkin-panel__today">✓ Checked in at {fmtTime(checkedInToday)}</p>
+              ) : (
+                <form method="POST" action="/bb26/api/checkin">
+                  <input type="hidden" name="code" value={card.code} />
+                  <input type="hidden" name="day" value={todayDay.date} />
+                  <button type="submit" class="checkin-panel__cta">Check in</button>
+                </form>
+              )}
+            </Fragment>
+          ) : (
+            <p class="checkin-panel__hint">
+              Check-in opens during the conference (16&ndash;19 July). A team member
+              can check you in if needed.
+            </p>
+          )}
+        </section>
 
         <nav class="links" aria-label="Conference information">
           <a class="qlink" href="/bb26/rules">
@@ -106,11 +151,13 @@ const fields = card
                 <path d="M18 3c-1.4 0-2.6 1.7-2.6 4s1.2 4 2.6 4v9" />
               </svg>
             </span>
-            <span class="qlink__txt"><b>Meal Timetable</b><small>Mealtimes &amp; groups</small></span>
+            <span class="qlink__txt"><b>Meal Timetable</b><small>Daily mealtimes</small></span>
             <span class="qlink__arr" aria-hidden="true">→</span>
           </a>
         </nav>
+        </div>
       </div>
+      </Fragment>
     ) : (
       <div class="hang">
         <span class="strap strap--l" aria-hidden="true"></span>
@@ -176,7 +223,18 @@ const fields = card
     justify-content: center;
     gap: clamp(28px, 5vw, 56px);
     width: 100%;
-    max-width: 740px;
+    max-width: 820px;
+  }
+
+  /* right column: check-in panel stacked above the quick links */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(20px, 3vh, 30px);
+    flex: 1 1 280px;
+    max-width: 340px;
+    min-width: 240px;
+    z-index: 3;
   }
 
   .hang {
@@ -192,11 +250,8 @@ const fields = card
   .links {
     display: flex;
     flex-direction: column;
-    flex: 1 1 250px;
-    max-width: 320px;
-    min-width: 240px;
+    width: 100%;
     border-top: 1px solid #e3d6bd;
-    z-index: 3;
   }
 
   .qlink {
@@ -257,7 +312,7 @@ const fields = card
   }
 
   @media (max-width: 680px) {
-    .links { flex-basis: 100%; max-width: min(360px, 86vw); }
+    .sidebar { flex-basis: 100%; max-width: min(360px, 86vw); }
   }
 
   /* ---- lanyard straps (flat woven ribbons that diverge up to the neck) ---- */
@@ -425,8 +480,8 @@ const fields = card
   .pass__rows {
     margin: 22px 0 0;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
     padding: 18px 0 0;
     border-top: 1px solid #ece2d0;
   }
@@ -461,6 +516,66 @@ const fields = card
     font-size: 0.72rem;
     letter-spacing: 0.02em;
     color: #a08a68;
+  }
+
+  /* ---- daily self check-in ---- */
+  .checkin-panel {
+    position: relative;
+    width: 100%;
+    text-align: center;
+  }
+
+  .checkin-panel__title {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 1.6rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #241a12;
+  }
+
+  .checkin-panel__hint {
+    margin: 6px 0 0;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--color-charcoal-light);
+  }
+
+  .checkin-panel__date {
+    margin: 6px 0 14px;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-charcoal-light);
+  }
+
+  .checkin-panel__cta {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--color-accent-dark);
+    border: none;
+    border-radius: 999px;
+    padding: 14px 36px;
+    cursor: pointer;
+    transition: background 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+  }
+
+  .checkin-panel__cta:hover { background: #b9641f; transform: translateY(-1px); }
+
+  .checkin-panel__today {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #3a6b2e;
   }
 
   /* ---- void ---- */

@@ -8,6 +8,13 @@ export const edition = {
   shortName: "BBC'26",
   codePrefix: "BB26",
   dates: "July 16 – 19, 2026",
+  // Conference days, used for per-day attendance check-in.
+  days: [
+    { date: "2026-07-16", label: "Thu 16", long: "Thursday 16 July" },
+    { date: "2026-07-17", label: "Fri 17", long: "Friday 17 July" },
+    { date: "2026-07-18", label: "Sat 18", long: "Saturday 18 July" },
+    { date: "2026-07-19", label: "Sun 19", long: "Sunday 19 July" },
+  ],
   venue: {
     name: "Conference Venue",
     address: "Krimnitzer Weg 25, 12527 Berlin, Germany",

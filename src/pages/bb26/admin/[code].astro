@@ -1,0 +1,598 @@
+---
+export const prerender = false;
+
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { edition } from "../../../config/editions/bb26";
+import { getAdminParticipant } from "../../../lib/db";
+import { isAuthed } from "../../../lib/admin-auth";
+
+// Admin-only. The /bb26/admin index renders its own login form, so bounce
+// unauthed visitors there with a next= so they land back here after sign-in.
+if (!isAuthed(Astro.request)) {
+  return Astro.redirect(`/bb26/admin?next=${encodeURIComponent(Astro.url.pathname)}`);
+}
+
+const { code } = Astro.params;
+const p = code ? await getAdminParticipant(code) : null;
+
+if (!p) {
+  Astro.response.status = 404;
+}
+
+const saved = Astro.url.searchParams.get("saved");
+
+const initials = p
+  ? p.name.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase()
+  : "";
+const attendedCount = p ? Object.keys(p.attendance).length : 0;
+
+// checked_in_at is stored UTC ("YYYY-MM-DD HH:MM:SS"); show it in Berlin time.
+function fmtCheckin(ts: string): string {
+  return new Date(ts.replace(" ", "T") + "Z").toLocaleString("en-GB", {
+    timeZone: "Europe/Berlin",
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+---
+
+<BaseLayout
+  title={p ? `${p.name} · Admin · ${edition.shortName}` : `Not found · ${edition.shortName}`}
+  noindex={true}
+  transparentHeader={true}
+>
+  <main class="con">
+    <div class="con__glow" aria-hidden="true"></div>
+
+    {!p ? (
+      <div class="signin">
+        <img class="signin__mark" src="/logo-black.png" alt="Boldness & Burdens Conference" width="600" height="630" />
+        <p class="kicker">{edition.shortName} · Admin</p>
+        <h1 class="signin__title">Not found</h1>
+        <p class="signin__text">No participant with that ID.</p>
+        <a class="signin__back" href="/bb26/admin">← Back to roster</a>
+      </div>
+    ) : (
+      <Fragment>
+        <header class="rail">
+          <a class="rail__brand" href="/bb26/admin">
+            <img class="rail__mark" src="/logo-black.png" alt="" width="600" height="630" />
+            <span class="rail__word">{edition.shortName}</span>
+            <span class="rail__tag">Admin</span>
+          </a>
+          <nav class="crumbs">
+            <a href="/bb26/admin">Roster</a>
+            <span aria-hidden="true">›</span>
+            <b>{p.code}</b>
+          </nav>
+        </header>
+
+        <section class="con__inner">
+          <header class="profile">
+            <span class="crest" aria-hidden="true">
+              <span class="crest__slot"></span>
+              <span class="crest__mono">{initials}</span>
+            </span>
+
+            <div class="profile__id">
+              <p class="kicker">Participant record</p>
+              <h1 class="profile__name">{p.name}</h1>
+              <div class="tags">
+                <span class="tag tag--code">{p.code}</span>
+                <span class={`tag ${p.stayingOnCamp ? "tag--camp" : "tag--day"}`}>
+                  {p.stayingOnCamp ? "On camp" : "Day visitor"}
+                </span>
+                <span class="tag tag--att">
+                  <span class="tag__pips">
+                    {edition.days.map((d) => (
+                      <i class={`pip ${p.attendance[d.date] ? "pip--on" : ""}`}></i>
+                    ))}
+                  </span>
+                  {attendedCount}/{edition.days.length} days
+                </span>
+              </div>
+            </div>
+
+            <a class="profile__badge" href={`/bb26/${p.code}`} target="_blank" rel="noopener">View badge →</a>
+          </header>
+
+          <p id="toast" class="toast" hidden={!saved}>{saved ? "Details saved" : ""}</p>
+
+          <section class="card">
+            <div class="card__head">
+              <h2 class="card__title">Daily attendance</h2>
+              <p class="card__hint">Tick a day to mark or clear it. Saves instantly.</p>
+            </div>
+            <div class="days">
+              {edition.days.map((d) => {
+                const at = p.attendance[d.date];
+
+                return (
+                  <label class="dayrow">
+                    <input
+                      type="checkbox"
+                      class="js-day"
+                      data-code={p.code}
+                      data-day={d.date}
+                      checked={!!at}
+                    />
+                    <span class="dayrow__box" aria-hidden="true"></span>
+                    <span class="dayrow__day">{d.long}</span>
+                    <span class="dayrow__state">{at ? `Checked in ${fmtCheckin(at)}` : "Not checked in"}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </section>
+
+          <form method="POST" action="/bb26/admin/api/update" class="card">
+            <div class="card__head">
+              <h2 class="card__title">Details</h2>
+              <p class="card__hint">Logistics and contact. Press save to apply.</p>
+            </div>
+            <input type="hidden" name="code" value={p.code} />
+
+            <div class="grid">
+              <label class="field">
+                <span>Room</span>
+                <input name="room" value={p.room ?? ""} placeholder="—" />
+              </label>
+              <label class="field">
+                <span>Group</span>
+                <input name="group" value={p.group ?? ""} placeholder="—" />
+              </label>
+              <label class="field">
+                <span>City</span>
+                <input name="city" value={p.city ?? ""} placeholder="—" />
+              </label>
+              <label class="field">
+                <span>Email</span>
+                <input name="email" type="email" value={p.email ?? ""} placeholder="—" />
+              </label>
+              <label class="field">
+                <span>Phone</span>
+                <input name="phone" value={p.phone ?? ""} placeholder="—" />
+              </label>
+            </div>
+
+            <label class="switch">
+              <input type="checkbox" name="staying_on_camp" checked={p.stayingOnCamp} />
+              <span class="switch__box" aria-hidden="true"></span>
+              <span>Staying on camp (needs a dorm bed)</span>
+            </label>
+
+            <button type="submit" class="save">Save details</button>
+          </form>
+        </section>
+      </Fragment>
+    )}
+  </main>
+</BaseLayout>
+
+<script>
+  const toast = document.getElementById("toast") as HTMLElement | null;
+  let toastTimer: ReturnType<typeof setTimeout> | undefined;
+
+  function showToast(msg: string, ok = true) {
+    if (!toast) return;
+
+    toast.textContent = msg;
+    toast.hidden = false;
+    toast.classList.toggle("is-err", !ok);
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 2600);
+  }
+
+  // Match the server's Berlin-time formatting for newly-stored check-ins.
+  function fmtClient(ts: string): string {
+    return new Date(ts.replace(" ", "T") + "Z").toLocaleString("en-GB", {
+      timeZone: "Europe/Berlin",
+      day: "2-digit",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+
+  // Daily attendance — one checkbox per day, saved on change.
+  document.querySelectorAll<HTMLInputElement>(".js-day").forEach((box) => {
+    box.addEventListener("change", async () => {
+      const code = box.dataset.code ?? "";
+      const day = box.dataset.day ?? "";
+      const next = box.checked;
+
+      box.disabled = true;
+
+      try {
+        const body = new URLSearchParams({ code, value: String(next), day });
+        const res = await fetch("/bb26/admin/api/checkin", { method: "POST", body });
+
+        if (!res.ok) throw new Error("save failed");
+
+        const data = await res.json();
+
+        if (!data.ok) throw new Error("save failed");
+
+        const state = box.closest(".dayrow")?.querySelector(".dayrow__state");
+
+        if (state) {
+          state.textContent = next && data.checkedInAt ? `Checked in ${fmtClient(data.checkedInAt)}` : "Not checked in";
+        }
+
+        showToast(next ? "Day marked" : "Day cleared");
+      } catch {
+        box.checked = !next;
+        showToast("Could not save — try again", false);
+      } finally {
+        box.disabled = false;
+      }
+    });
+  });
+</script>
+
+<style>
+  .con {
+    --ink: var(--color-charcoal);
+    --ink-soft: var(--color-charcoal-light);
+    --paper: #fbf8f2;
+    --paper-2: #f3ecdf;
+    --line: #e7dcc6;
+    --brass: #9c7322;
+    --gold: #d8b256;
+    --att: var(--color-success);
+    --leather-1: #2a2421;
+    --leather-2: #14110f;
+
+    position: relative;
+    min-height: 100dvh;
+    padding: 0 var(--space-md) var(--space-3xl);
+    overflow: hidden;
+  }
+
+  .con__glow {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    width: min(130vw, 820px);
+    height: 540px;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgba(212, 135, 58, 0.14), transparent 72%);
+    pointer-events: none;
+  }
+
+  .kicker {
+    font-family: var(--font-body);
+    font-size: 0.64rem;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin: 0;
+  }
+
+  /* ---- not found / fallback card ---- */
+  .signin {
+    position: relative;
+    width: min(380px, 100%);
+    margin: 12vh auto 0;
+    text-align: center;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: var(--space-2xl) var(--space-xl);
+    box-shadow: 0 24px 60px -36px rgba(30, 22, 16, 0.5);
+  }
+  .signin__mark { display: block; width: 120px; height: auto; margin: 0 auto -2px; }
+  .signin__title {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    margin: 6px 0 var(--space-sm);
+  }
+  .signin__text { color: var(--ink-soft); font-size: 0.9rem; margin-bottom: var(--space-md); }
+  .signin__back { font-family: var(--font-body); color: var(--color-accent-dark); }
+
+  /* ---- top rail ---- */
+  .rail {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 16px 4px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .rail__brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+  .rail__mark { width: 30px; height: auto; }
+  .rail__word { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.06em; color: var(--ink); }
+  .rail__tag {
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--brass);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 3px 9px;
+  }
+  .crumbs {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
+  .crumbs a { color: var(--color-accent-dark); text-decoration: none; }
+  .crumbs a:hover { text-decoration: underline; }
+  .crumbs b { color: var(--ink); font-weight: 600; letter-spacing: 0.08em; }
+
+  .con__inner {
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  /* ---- profile header with leather crest ---- */
+  .profile {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    padding: var(--space-xl) 0 var(--space-md);
+  }
+
+  .crest {
+    position: relative;
+    flex: 0 0 auto;
+    width: 78px;
+    height: 96px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(255, 255, 255, 0.08), transparent 60%),
+      linear-gradient(180deg, var(--leather-1), var(--leather-2));
+    box-shadow: 0 12px 26px -12px rgba(30, 22, 16, 0.6), inset 0 0 0 1px rgba(216, 178, 86, 0.18);
+  }
+  .crest__slot {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 6px;
+    border-radius: 999px;
+    background: #0c0a09;
+  }
+  .crest__mono {
+    margin-top: 10px;
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  }
+
+  .profile__id { flex: 1; min-width: 0; }
+  .profile__name {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 6.5vw, 3.2rem);
+    letter-spacing: 0.02em;
+    line-height: 0.9;
+    color: var(--ink);
+    margin: 4px 0 10px;
+  }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+  .tag--code { color: var(--brass); letter-spacing: 0.12em; }
+  .tag--camp { background: rgba(92, 138, 110, 0.12); border-color: rgba(92, 138, 110, 0.3); color: #3a6b52; }
+  .tag--day { background: rgba(212, 135, 58, 0.14); border-color: rgba(212, 135, 58, 0.4); color: var(--color-accent-dark); }
+  .tag__pips { display: inline-flex; gap: 4px; }
+
+  .profile__badge {
+    align-self: flex-start;
+    flex: 0 0 auto;
+    font-family: var(--font-body);
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--color-accent-dark);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    border-radius: 999px;
+    padding: 8px 14px;
+    white-space: nowrap;
+  }
+  .profile__badge:hover { border-color: var(--color-accent); color: var(--color-accent-dark); }
+
+  /* day pips — shared per-day attendance motif */
+  .pip {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1.5px solid #d8cbb2;
+  }
+  .pip--on { background: var(--att); border-color: var(--att); }
+
+  /* ---- toast ---- */
+  .toast {
+    margin: 0;
+    padding: 10px 16px;
+    background: linear-gradient(180deg, #cfe3b8, #a9cf86);
+    color: #1c2a1c;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  .toast.is-err { background: linear-gradient(180deg, #f3cfcf, #e7a0a0); color: #4a1c1c; }
+
+  /* ---- cards ---- */
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: var(--space-lg);
+  }
+  .card__head { margin-bottom: var(--space-md); }
+  .card__title {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    letter-spacing: 0.03em;
+    color: var(--ink);
+  }
+  .card__hint { margin: 4px 0 0; font-family: var(--font-body); font-size: 0.8rem; color: var(--ink-soft); }
+
+  /* ---- daily attendance rows ---- */
+  .days { display: flex; flex-direction: column; gap: 8px; }
+  .dayrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    font-family: var(--font-body);
+    background: var(--color-cream);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+  }
+  .dayrow input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .dayrow__box {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    border: 1.5px solid #cdbfa6;
+    background: #fff;
+    display: grid;
+    place-items: center;
+    transition: background 0.18s var(--ease-out), border-color 0.18s var(--ease-out);
+  }
+  .dayrow__box::after {
+    content: "";
+    width: 6px;
+    height: 11px;
+    border: solid #fff;
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg) scale(0);
+    transition: transform 0.18s var(--ease-out);
+  }
+  .dayrow__day { flex: 1; font-weight: 600; font-size: 0.92rem; color: var(--ink); }
+  .dayrow__state { font-size: 0.78rem; color: var(--ink-soft); text-align: right; }
+
+  .dayrow:has(input:checked) { background: rgba(92, 138, 110, 0.12); border-color: rgba(92, 138, 110, 0.45); }
+  .dayrow:has(input:checked) .dayrow__box { background: var(--att); border-color: var(--att); }
+  .dayrow:has(input:checked) .dayrow__box::after { transform: rotate(45deg) scale(1); }
+  .dayrow:has(input:checked) .dayrow__state { color: #3a6b52; font-weight: 600; }
+  .dayrow:has(input:focus-visible) { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .dayrow:has(input:disabled) { opacity: 0.55; }
+
+  /* ---- details form ---- */
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  @media (max-width: 540px) { .grid { grid-template-columns: 1fr; } }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field span {
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .field input {
+    width: 100%;
+    padding: 10px 12px;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    color: var(--ink);
+    background: var(--color-cream);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    outline: none;
+    transition: border-color 0.2s var(--ease-out);
+  }
+  .field input:focus { border-color: var(--color-accent); }
+
+  .switch {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: var(--space-md);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .switch__box {
+    position: relative;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 24px;
+    border-radius: 999px;
+    background: #ddd0b8;
+    transition: background 0.2s var(--ease-out);
+  }
+  .switch__box::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s var(--ease-out);
+  }
+  .switch:has(input:checked) .switch__box { background: var(--att); }
+  .switch:has(input:checked) .switch__box::after { transform: translateX(18px); }
+  .switch:has(input:focus-visible) .switch__box { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+  .save {
+    margin-top: var(--space-lg);
+    padding: 12px 28px;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #1e1610;
+    background: var(--color-accent);
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+  }
+  .save:hover { background: var(--color-accent-light); transform: translateY(-1px); }
+
+  @media (max-width: 540px) {
+    .profile { flex-wrap: wrap; }
+    .profile__badge { order: 3; }
+  }
+</style>

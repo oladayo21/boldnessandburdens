@@ -32,7 +32,7 @@ const { title, intro } = Astro.props;
   const back = document.querySelector<HTMLAnchorElement>("[data-back]");
 
   back?.addEventListener("click", (e) => {
-    if (document.referrer.includes("/bb26/card/")) {
+    if (document.referrer.includes("/bb26/BB26-")) {
       e.preventDefault();
       history.back();
     }

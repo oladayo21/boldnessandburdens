@@ -54,7 +54,7 @@ import { edition } from "../../config/editions/bb26";
     items.forEach((it, i) => {
       const li = document.createElement("li");
       const a = document.createElement("a");
-      a.href = `/bb26/card/${encodeURIComponent(it.code)}`;
+      a.href = `/bb26/${encodeURIComponent(it.code)}`;
       a.className = "results__item";
       a.style.setProperty("--i", String(i));
       a.innerHTML = `<span class="results__name"></span><span class="results__go">open →</span>`;

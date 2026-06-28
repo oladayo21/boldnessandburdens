@@ -42,350 +42,477 @@ const configured = isConfigured();
 const authed = isAuthed(Astro.request);
 const participants = authed ? await listParticipants() : [];
 
-const saved = Astro.url.searchParams.get("saved");
+const attendedCount = (p: (typeof participants)[number]) =>
+  Object.keys(p.attendance).length;
+
+const onCamp = participants.filter((p) => p.stayingOnCamp).length;
+const roomed = participants.filter((p) => p.room).length;
+const checkedIn = participants.filter((p) => attendedCount(p) > 0).length;
 ---
 
 <BaseLayout title={`Admin · ${edition.shortName}`} noindex={true} transparentHeader={true}>
-  <main class={`adm ${authed ? "adm--wide" : ""}`}>
-    <div class="adm__spot" aria-hidden="true"></div>
+  <main class="con">
+    <div class="con__glow" aria-hidden="true"></div>
 
     {!configured ? (
-      <div class="gate">
-        <img class="gate__logo" src="/logo-black.png" alt="Boldness & Burdens Conference" width="600" height="630" />
-        <p class="gate__eyebrow">{edition.shortName} · Admin</p>
-        <h1 class="gate__title">Not configured</h1>
-        <p class="gate__text">
-          Set the <code>ADMIN_PASSWORD</code> secret to enable the admin area.
-        </p>
+      <div class="signin">
+        <img class="signin__mark" src="/logo-black.png" alt="Boldness & Burdens Conference" width="600" height="630" />
+        <p class="kicker">{edition.shortName} · Admin</p>
+        <h1 class="signin__title">Not configured</h1>
+        <p class="signin__text">Set the <code>ADMIN_PASSWORD</code> secret to open the console.</p>
       </div>
     ) : !authed ? (
-      <div class="gate">
-        <img class="gate__logo" src="/logo-black.png" alt="Boldness & Burdens Conference" width="600" height="630" />
-        <p class="gate__eyebrow">{edition.shortName} · Admin</p>
-        <h1 class="gate__title">Sign in</h1>
-        {loginError && <p class="gate__error">{loginError}</p>}
-        <form method="POST" class="gate__form">
+      <div class="signin">
+        <img class="signin__mark" src="/logo-black.png" alt="Boldness & Burdens Conference" width="600" height="630" />
+        <p class="kicker">{edition.shortName} · Admin</p>
+        <h1 class="signin__title">Sign in</h1>
+        {loginError && <p class="signin__error">{loginError}</p>}
+        <form method="POST" class="signin__form">
           <input type="hidden" name="next" value={next} />
           <input
             id="password"
             name="password"
             type="password"
-            class="gate__input"
+            class="signin__input"
             placeholder="Admin password"
             autocomplete="current-password"
             required
           />
-          <button type="submit" class="gate__btn">Sign in</button>
+          <button type="submit" class="signin__go">Enter</button>
         </form>
       </div>
     ) : (
-      <section class="adm__inner">
-        <header class="adm__head">
-          <img class="adm__logo" src="/logo-black.png" alt="Boldness & Burdens Conference" width="600" height="630" />
-          <div>
-            <p class="adm__eyebrow">{edition.shortName} · Admin</p>
-            <h1 class="adm__title">Participants</h1>
-          </div>
-          <ul class="adm__stats">
-            <li><b>{participants.length}</b><span>people</span></li>
-            <li><b>{participants.filter((p) => p.stayingOnCamp).length}</b><span>on camp</span></li>
-            <li><b>{participants.filter((p) => p.room).length}</b><span>roomed</span></li>
-            <li><b>{participants.filter((p) => p.checkedIn).length}</b><span>checked in</span></li>
-          </ul>
+      <Fragment>
+        <header class="rail">
+          <a class="rail__brand" href="/bb26/admin">
+            <img class="rail__mark" src="/logo-black.png" alt="" width="600" height="630" />
+            <span class="rail__word">{edition.shortName}</span>
+            <span class="rail__tag">Admin</span>
+          </a>
         </header>
 
-        {saved && <p class="adm__toast">Saved {saved}</p>}
-
-        <div class="board__scroll">
-          <div class="board">
-            <div class="board__headrow">
-              <span>ID</span>
-              <span>Name</span>
-              <span>Room</span>
-              <span>Group</span>
-              <span>Meal</span>
-              <span>In</span>
-              <span></span>
-            </div>
-
-            {participants.map((p) => (
-              <form
-                method="POST"
-                action="/bb26/admin/api/update"
-                class={`board__row ${p.checkedIn ? "is-in" : ""}`}
-              >
-                <input type="hidden" name="code" value={p.code} />
-                <span class="board__code">{p.code}</span>
-                <span class="board__name">
-                  <span class="board__nameline">
-                    {p.name}
-                    {!p.stayingOnCamp && <span class="board__day">Day</span>}
-                  </span>
-                  {p.city && <small>{p.city}</small>}
-                </span>
-                <input name="room" class="board__in" value={p.room ?? ""} placeholder="—" aria-label={`Room for ${p.name}`} />
-                <input name="group" class="board__in" value={p.group ?? ""} placeholder="—" aria-label={`Group for ${p.name}`} />
-                <input name="eating" class="board__in" value={p.eating ?? ""} placeholder="—" aria-label={`Meal group for ${p.name}`} />
-                <label class="board__check" aria-label={`Checked in: ${p.name}`}>
-                  <input type="checkbox" name="checked_in" checked={p.checkedIn} />
-                </label>
-                <button type="submit" class="board__save">Save</button>
-              </form>
-            ))}
+        <section class="con__inner">
+          <div class="masthead">
+            <p class="kicker">Roster</p>
+            <h1 class="masthead__title">Participants</h1>
           </div>
-        </div>
-      </section>
+
+          <div class="board" role="group" aria-label="Filter participants">
+            <ul class="figs">
+              <li><button type="button" class="fig" data-filter="all" aria-pressed="true"><b>{participants.length}</b><span class="figs__lbl">People</span></button></li>
+              <li><button type="button" class="fig" data-filter="camp" aria-pressed="false"><b>{onCamp}</b><span class="figs__lbl">On camp</span></button></li>
+              <li><button type="button" class="fig" data-filter="roomed" aria-pressed="false"><b>{roomed}</b><span class="figs__lbl">Roomed</span></button></li>
+              <li><button type="button" class="fig" data-filter="in" aria-pressed="false"><b>{checkedIn}</b><span class="figs__lbl">Checked in</span></button></li>
+            </ul>
+          </div>
+
+          <div class="filter">
+            <svg class="filter__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
+            <input id="filter" class="filter__input" type="search" placeholder="Filter by name or ID…" autocomplete="off" aria-label="Filter participants" />
+            <span id="count" class="filter__count">{participants.length}</span>
+          </div>
+
+          <div class="roster__scroll">
+            <div class="roster">
+              <div class="roster__head">
+                <span>ID</span>
+                <span>Name</span>
+                <span>Room</span>
+                <span>Group</span>
+                <span class="ctr">Days</span>
+              </div>
+
+              {participants.map((p) => (
+                <a
+                  class={`rec ${attendedCount(p) > 0 ? "is-in" : ""}`}
+                  href={`/bb26/admin/${p.code}`}
+                  data-search={`${p.name} ${p.code}`.toLowerCase()}
+                  data-camp={p.stayingOnCamp ? "1" : "0"}
+                  data-roomed={p.room ? "1" : "0"}
+                  data-in={attendedCount(p) > 0 ? "1" : "0"}
+                >
+                  <span class="rec__code">{p.code}</span>
+                  <span class="rec__name">
+                    <span class="rec__nm">
+                      {p.name}
+                      {!p.stayingOnCamp && <span class="rec__day">Day</span>}
+                    </span>
+                    {p.city && <small>{p.city}</small>}
+                  </span>
+                  <span class="rec__cell rec__cell--room" data-label="Room">{p.room ?? "—"}</span>
+                  <span class="rec__cell rec__cell--group" data-label="Group">{p.group ?? "—"}</span>
+                  <span class="rec__pips ctr">
+                    {edition.days.map((d) => (
+                      <i
+                        class={`pip ${p.attendance[d.date] ? "pip--on" : ""}`}
+                        title={`${d.long}: ${p.attendance[d.date] ? "checked in" : "not checked in"}`}
+                      ></i>
+                    ))}
+                  </span>
+                </a>
+              ))}
+
+              <p id="empty" class="roster__empty" hidden>No one matches that.</p>
+            </div>
+          </div>
+        </section>
+      </Fragment>
     )}
   </main>
 </BaseLayout>
 
+<script>
+  const input = document.getElementById("filter") as HTMLInputElement | null;
+  const count = document.getElementById("count");
+  const empty = document.getElementById("empty");
+  const rows = Array.from(document.querySelectorAll<HTMLElement>(".rec"));
+  const figs = Array.from(document.querySelectorAll<HTMLButtonElement>(".fig"));
+
+  let active = "all";
+
+  function matchesCat(row: HTMLElement) {
+    if (active === "camp") return row.dataset.camp === "1";
+    if (active === "roomed") return row.dataset.roomed === "1";
+    if (active === "in") return row.dataset.in === "1";
+
+    return true;
+  }
+
+  function applyFilter() {
+    const q = (input?.value ?? "").trim().toLowerCase();
+    let shown = 0;
+
+    for (const row of rows) {
+      const hit = (!q || (row.dataset.search ?? "").includes(q)) && matchesCat(row);
+      row.hidden = !hit;
+
+      if (hit) shown += 1;
+    }
+
+    if (count) count.textContent = String(shown);
+    if (empty) empty.hidden = shown !== 0;
+  }
+
+  input?.addEventListener("input", applyFilter);
+
+  for (const btn of figs) {
+    btn.addEventListener("click", () => {
+      active = btn.dataset.filter ?? "all";
+
+      for (const b of figs) b.setAttribute("aria-pressed", String(b === btn));
+
+      applyFilter();
+    });
+  }
+</script>
+
 <style>
-  .adm {
+  .con {
+    --ink: var(--color-charcoal);
+    --ink-soft: var(--color-charcoal-light);
+    --paper: #fbf8f2;
+    --paper-2: #f3ecdf;
+    --line: #e7dcc6;
+    --brass: #9c7322;
+    --gold: #d8b256;
+    --att: var(--color-success);
+
     position: relative;
     min-height: 100dvh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: clamp(40px, 7vh, 80px) var(--space-md) var(--space-3xl);
+    padding: 0 var(--space-md) var(--space-3xl);
     overflow: hidden;
   }
 
-  .adm--wide { align-items: flex-start; }
-
-  .adm__spot {
+  .con__glow {
     position: absolute;
-    top: -160px;
+    top: -200px;
     left: 50%;
-    width: min(120vw, 680px);
-    height: 520px;
+    width: min(130vw, 820px);
+    height: 540px;
     transform: translateX(-50%);
-    background: radial-gradient(closest-side, rgba(212, 135, 58, 0.16), transparent 70%);
+    background: radial-gradient(closest-side, rgba(212, 135, 58, 0.14), transparent 72%);
     pointer-events: none;
   }
 
-  /* ---- gate (login / not configured) ---- */
-  .gate {
+  .kicker {
+    font-family: var(--font-body);
+    font-size: 0.64rem;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin: 0;
+  }
+
+  code {
+    font-family: var(--font-body);
+    background: var(--color-cream-dark);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  /* ---- sign in ---- */
+  .signin {
     position: relative;
     width: min(380px, 100%);
+    margin: 12vh auto 0;
     text-align: center;
-    background: #fbf8f2;
-    border: 1px solid #ece2d0;
+    background: var(--paper);
+    border: 1px solid var(--line);
     border-radius: 18px;
     padding: var(--space-2xl) var(--space-xl);
+    box-shadow: 0 24px 60px -36px rgba(30, 22, 16, 0.5);
   }
 
-  .gate__logo { display: block; width: 130px; height: auto; margin: 0 auto -6px; }
-
-  .gate__eyebrow {
-    font-family: var(--font-body);
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--color-accent-dark);
-    margin: 0 0 var(--space-xs);
-  }
-
-  .gate__title {
+  .signin__mark { display: block; width: 120px; height: auto; margin: 0 auto -2px; }
+  .signin__title {
     font-family: var(--font-display);
-    font-size: 2.4rem;
-    letter-spacing: 0.03em;
-    color: var(--color-charcoal);
-    margin: 0 0 var(--space-md);
+    font-size: 3rem;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    margin: 6px 0 var(--space-md);
   }
-
-  .gate__text { color: var(--color-charcoal-light); font-size: 0.95rem; }
-
-  .gate__error { color: var(--color-error); margin: 0 0 var(--space-md); font-size: 0.9rem; }
-
-  .gate__form { display: flex; flex-direction: column; gap: var(--space-sm); }
-
-  .gate__input {
+  .signin__text { color: var(--ink-soft); font-size: 0.9rem; }
+  .signin__error { color: var(--color-error); margin: 0 0 var(--space-md); font-size: 0.9rem; }
+  .signin__form { display: flex; flex-direction: column; gap: var(--space-sm); }
+  .signin__input {
     width: 100%;
-    padding: 14px 16px;
+    padding: 13px 15px;
     font-family: var(--font-body);
     font-size: 1rem;
-    color: var(--color-charcoal);
+    color: var(--ink);
     background: var(--color-cream);
-    border: 1.5px solid #211a12;
-    border-radius: 12px;
+    border: 1.5px solid var(--ink);
+    border-radius: 11px;
     outline: none;
-    transition: border-color 0.3s var(--ease-out);
+    transition: border-color 0.25s var(--ease-out);
   }
-
-  .gate__input:focus {
-    border-color: var(--color-accent);
-  }
-
-  .gate__btn {
-    padding: 14px;
+  .signin__input:focus { border-color: var(--color-accent); }
+  .signin__go {
+    padding: 13px;
     font-family: var(--font-display);
-    font-size: 1.2rem;
-    letter-spacing: 0.08em;
+    font-size: 1.4rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: #1e1610;
     background: var(--color-accent);
     border: none;
-    border-radius: 12px;
+    border-radius: 11px;
     cursor: pointer;
-    transition: background-color 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+    transition: background-color 0.25s var(--ease-out), transform 0.25s var(--ease-out);
   }
+  .signin__go:hover { background: var(--color-accent-light); transform: translateY(-1px); }
 
-  .gate__btn:hover { background: var(--color-accent-light); transform: translateY(-1px); }
-
-  /* ---- authed board ---- */
-  .adm__inner { position: relative; width: min(960px, 100%); }
-
-  .adm__head {
+  /* ---- top rail ---- */
+  .rail {
+    position: relative;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: var(--space-md);
-    flex-wrap: wrap;
-    margin-bottom: var(--space-lg);
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 16px 4px 14px;
+    border-bottom: 1px solid var(--line);
   }
-
-  .adm__logo { width: 66px; height: auto; flex: 0 0 auto; margin-left: -6px; }
-
-  .adm__eyebrow {
+  .rail__brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+  .rail__mark { width: 30px; height: auto; }
+  .rail__word {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+  }
+  .rail__tag {
     font-family: var(--font-body);
-    font-size: 0.66rem;
+    font-size: 0.6rem;
     font-weight: 600;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--color-accent-dark);
-    margin: 0 0 2px;
+    color: var(--brass);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 3px 9px;
   }
+  .con__inner { position: relative; max-width: 940px; margin: 0 auto; padding: 0; }
 
-  .adm__title {
+  /* ---- masthead ---- */
+  .masthead { padding: var(--space-md) 0 var(--space-md); }
+  .masthead__title {
     font-family: var(--font-display);
-    font-size: clamp(2.2rem, 6vw, 3rem);
-    letter-spacing: 0.03em;
-    color: var(--color-charcoal);
-    margin: 0;
-    line-height: 0.9;
+    font-size: clamp(2.4rem, 6vw, 3.4rem);
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    line-height: 0.86;
+    margin: 4px 0 0;
   }
 
-  .adm__stats {
-    display: flex;
-    gap: var(--space-sm);
-    list-style: none;
-    margin: 0 0 0 auto;
-    padding: 0;
+  /* ---- stat filters ---- */
+  .board {
+    display: inline-flex;
+    max-width: 100%;
+    padding: 14px 20px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    margin-bottom: var(--space-md);
   }
 
-  .adm__stats li {
+  .figs { display: flex; list-style: none; margin: 0; padding: 0; }
+  .figs li { display: flex; border-left: 1px solid var(--line); }
+  .figs li:first-child { border-left: none; }
+
+  .fig {
+    position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    min-width: 64px;
-    padding: 8px 12px;
-    background: #fbf8f2;
-    border: 1px solid #ece2d0;
-    border-radius: 12px;
+    gap: 6px;
+    padding: 2px 18px 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
   }
-
-  .adm__stats b {
+  .figs li:first-child .fig { padding-left: 0; }
+  .fig b {
     font-family: var(--font-display);
-    font-size: 1.5rem;
+    font-size: 1.95rem;
     line-height: 1;
-    color: var(--color-charcoal);
+    color: var(--ink);
   }
-
-  .adm__stats span {
+  .figs__lbl {
     font-family: var(--font-body);
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-charcoal-light);
-    margin-top: 3px;
-  }
-
-  .adm__toast {
-    margin: 0 0 var(--space-md);
-    padding: 10px 16px;
-    background: linear-gradient(180deg, #cfe3b8, #a9cf86);
-    color: #1c2a1c;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
-
-  /* ---- grid board ---- */
-  .board__scroll {
-    overflow-x: auto;
-    background: #fbf8f2;
-    border: 1px solid #ece2d0;
-    border-radius: 16px;
-  }
-
-  .board { min-width: 720px; }
-
-  .board__headrow,
-  .board__row {
-    display: grid;
-    grid-template-columns: 92px minmax(160px, 1fr) 7rem 7rem 7rem 44px 76px;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: 10px var(--space-lg);
-  }
-
-  .board__headrow {
-    font-family: var(--font-body);
-    font-size: 0.62rem;
+    font-size: 0.56rem;
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-charcoal-light);
-    border-bottom: 1px solid #ece2d0;
+    color: var(--ink-soft);
+  }
+  .fig:hover b { color: var(--brass); }
+  .fig[aria-pressed="true"] b,
+  .fig[aria-pressed="true"] .figs__lbl { color: var(--brass); }
+  .fig:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 2px; }
+
+  /* ---- filter ---- */
+  .filter {
     position: sticky;
     top: 0;
-    background: #f3ecdf;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin-bottom: var(--space-md);
   }
-
-  .board__row {
-    border-bottom: 1px solid #f0e8da;
-  }
-
-  .board__row:last-child { border-bottom: none; }
-
-  .board__row.is-in {
-    background: rgba(169, 207, 134, 0.16);
-  }
-
-  .board__code {
+  .filter__ico { width: 18px; height: 18px; color: var(--brass); flex: 0 0 auto; }
+  .filter__input {
+    flex: 1;
+    border: none;
+    background: transparent;
     font-family: var(--font-body);
-    font-weight: 500;
-    font-size: 0.8rem;
-    letter-spacing: 0.12em;
-    color: var(--gold-3, #9c7322);
+    font-size: 0.95rem;
+    color: var(--ink);
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .filter__input::placeholder { color: var(--ink-soft); opacity: 0.7; }
+  .filter__count {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--paper-2);
+    border-radius: 999px;
+    padding: 3px 10px;
+    flex: 0 0 auto;
+  }
+
+  /* ---- roster ---- */
+  .roster__scroll {
+    overflow-x: auto;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .roster { min-width: 660px; }
+
+  .roster__head,
+  .rec {
+    display: grid;
+    grid-template-columns: 84px minmax(150px, 1fr) 5.5rem 5.5rem 88px;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 11px var(--space-lg);
+  }
+  .ctr { text-align: center; justify-self: center; }
+
+  .roster__head {
+    font-family: var(--font-body);
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    background: var(--paper-2);
+  }
+
+  .rec {
+    position: relative;
+    border-bottom: 1px solid #f1eade;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: background-color 0.14s var(--ease-out);
+  }
+  .rec:last-of-type { border-bottom: none; }
+  .rec:hover { background: var(--paper-2); }
+  .rec:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -2px; }
+  .rec[hidden] { display: none; }
+
+  /* gold left edge marks a checked-in participant */
+  .rec.is-in::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(var(--gold), var(--brass));
+  }
+
+  .rec__code {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    color: var(--brass);
     white-space: nowrap;
   }
-
-  .board__name {
-    display: flex;
-    flex-direction: column;
+  .rec__name { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+  .rec__nm { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; color: var(--ink); }
+  .rec__name small { font-size: 0.72rem; color: var(--ink-soft); }
+  .rec__cell {
     font-family: var(--font-body);
-    font-weight: 500;
-    color: var(--color-charcoal);
-    line-height: 1.2;
+    font-size: 0.85rem;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .board__name small {
-    font-weight: 400;
-    font-size: 0.72rem;
-    color: var(--color-charcoal-light);
-  }
-
-  .board__nameline {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  /* day / commuter participant — does not need a dorm bed */
-  .board__day {
+  .rec__day {
     font-family: var(--font-body);
-    font-size: 0.56rem;
+    font-size: 0.54rem;
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -397,61 +524,67 @@ const saved = Astro.url.searchParams.get("saved");
     white-space: nowrap;
   }
 
-  .board__in {
-    width: 100%;
-    min-height: 38px;
-    padding: 6px 10px;
+  /* day pips — the per-day attendance motif */
+  .rec__pips { display: inline-flex; gap: 5px; }
+  .pip {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1.5px solid #d8cbb2;
+  }
+  .pip--on {
+    background: var(--att);
+    border-color: var(--att);
+    box-shadow: 0 0 0 2px rgba(92, 138, 110, 0.16);
+  }
+
+  .roster__empty {
+    margin: 0;
+    padding: 22px var(--space-lg);
     font-family: var(--font-body);
     font-size: 0.9rem;
-    color: var(--color-charcoal);
-    background: var(--color-cream);
-    border: 1px solid #e0d4bf;
-    border-radius: 8px;
-    outline: none;
-    transition: border-color 0.2s var(--ease-out);
+    color: var(--ink-soft);
+    text-align: center;
   }
 
-  .board__in:focus {
-    border-color: var(--color-accent);
-  }
+  @media (max-width: 620px) {
+    .board { display: flex; width: 100%; padding: 12px 6px; }
+    .figs { width: 100%; }
+    .figs li { flex: 1; justify-content: center; }
+    .fig { flex: 1; align-items: center; padding: 2px 6px 5px; gap: 5px; }
+    .figs li:first-child .fig { padding-left: 6px; }
+    .fig b { font-size: 1.55rem; }
+    .figs__lbl { font-size: 0.52rem; letter-spacing: 0.1em; text-align: center; }
 
-  .board__check {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .board__check input {
-    width: 22px;
-    height: 22px;
-    accent-color: var(--color-success);
-    cursor: pointer;
-  }
-
-  .board__save {
-    padding: 8px 0;
-    font-family: var(--font-body);
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #1e1610;
-    background: transparent;
-    border: 1.5px solid var(--color-charcoal);
-    border-radius: 999px;
-    cursor: pointer;
-    transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
-  }
-
-  .board__save:hover {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-  }
-
-  code {
-    font-family: var(--font-body);
-    background: var(--color-cream-dark);
-    padding: 1px 6px;
-    border-radius: 4px;
+    /* roster: table → stacked cards */
+    .roster { min-width: 0; }
+    .roster__scroll { overflow-x: visible; }
+    .roster__head { display: none; }
+    .rec {
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-areas:
+        "code code pips"
+        "name name name"
+        "room group group";
+      gap: 8px 10px;
+      padding: 14px var(--space-md);
+    }
+    .rec__code { grid-area: code; align-self: center; }
+    .rec__pips { grid-area: pips; justify-self: end; align-self: center; }
+    .rec__name { grid-area: name; }
+    .rec__cell--room { grid-area: room; }
+    .rec__cell--group { grid-area: group; }
+    .rec__cell { white-space: normal; }
+    .rec__cell::before {
+      content: attr(data-label);
+      display: block;
+      font-size: 0.5rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 2px;
+    }
   }
 </style>
