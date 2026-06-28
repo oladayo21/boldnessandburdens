@@ -6,6 +6,7 @@ import { edition } from "../../config/editions/bb26";
 import { getCard } from "../../lib/db";
 import { isAuthed } from "../../lib/admin-auth";
 import { hasPass, badgeKey, passCookie } from "../../lib/badge-pass";
+import { actions } from "astro:actions";
 
 const { code } = Astro.params;
 
@@ -28,6 +29,13 @@ if (code && key && key === (await badgeKey(code))) {
 // being enumerated to read everyone's room assignment.
 if (code && !isAuthed(Astro.request) && !(await hasPass(Astro.request, code))) {
   return Astro.redirect(`/bb26/participant?id=${encodeURIComponent(code)}`);
+}
+
+// PRG: after a self check-in (selfCheckIn action), bounce back to the clean URL.
+const checkinResult = Astro.getActionResult(actions.selfCheckIn);
+
+if (checkinResult && !checkinResult.error && code) {
+  return Astro.redirect(`/bb26/${encodeURIComponent(code)}`);
 }
 
 const card = code ? await getCard(code) : null;
@@ -121,7 +129,7 @@ function fmtTime(ts: string): string {
                   {at ? (
                     <span class="cday__done">✓ {fmtTime(at)}</span>
                   ) : isToday ? (
-                    <form method="POST" action="/bb26/api/checkin">
+                    <form method="POST" action={actions.selfCheckIn}>
                       <input type="hidden" name="code" value={card.code} />
                       <input type="hidden" name="day" value={d.date} />
                       <button type="submit" class="cday__cta">Check in</button>

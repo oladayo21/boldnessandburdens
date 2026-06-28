@@ -7,6 +7,7 @@ import { getAdminParticipant } from "../../../lib/db";
 import { isAuthed } from "../../../lib/admin-auth";
 import { badgeKey } from "../../../lib/badge-pass";
 import { renderSVG } from "uqr";
+import { actions } from "astro:actions";
 
 // Admin-only. The /bb26/admin index renders its own login form, so bounce
 // unauthed visitors there with a next= so they land back here after sign-in.
@@ -15,6 +16,15 @@ if (!isAuthed(Astro.request)) {
 }
 
 const { code } = Astro.params;
+
+// PRG: after the details form (saveParticipant action) succeeds, redirect so the
+// toast shows and a refresh doesn't re-submit.
+const saveResult = Astro.getActionResult(actions.saveParticipant);
+
+if (saveResult && !saveResult.error && code) {
+  return Astro.redirect(`/bb26/admin/${encodeURIComponent(code)}?saved=${encodeURIComponent(code)}`);
+}
+
 const p = code ? await getAdminParticipant(code) : null;
 
 if (!p) {
@@ -137,7 +147,7 @@ function fmtCheckin(ts: string): string {
             </div>
           </section>
 
-          <form method="POST" action="/bb26/admin/api/update" class="card">
+          <form method="POST" action={actions.saveParticipant} class="card">
             <div class="card__head">
               <h2 class="card__title">Details</h2>
             </div>
@@ -181,62 +191,39 @@ function fmtCheckin(ts: string): string {
 </BaseLayout>
 
 <script>
-  const toast = document.getElementById("toast") as HTMLElement | null;
-  let toastTimer: ReturnType<typeof setTimeout> | undefined;
+  import { actions } from "astro:actions";
 
-  function showToast(msg: string, ok = true) {
+  const toast = document.getElementById("toast") as HTMLElement | null;
+
+  function showError(msg: string) {
     if (!toast) return;
 
     toast.textContent = msg;
     toast.hidden = false;
-    toast.classList.toggle("is-err", !ok);
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { toast.hidden = true; }, 2600);
+    toast.classList.add("is-err");
   }
 
-  // Match the server's Berlin-time formatting for newly-stored check-ins.
-  function fmtClient(ts: string): string {
-    return new Date(ts.replace(" ", "T") + "Z").toLocaleString("en-GB", {
-      timeZone: "Europe/Berlin",
-      day: "2-digit",
-      month: "short",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  }
-
-  // Daily attendance — one checkbox per day, saved on change.
+  // Daily attendance — save on change via an action, then reload so the
+  // header's attendance count (and everything else) stays consistent.
   document.querySelectorAll<HTMLInputElement>(".js-day").forEach((box) => {
     box.addEventListener("change", async () => {
-      const code = box.dataset.code ?? "";
-      const day = box.dataset.day ?? "";
-      const next = box.checked;
-
       box.disabled = true;
 
-      try {
-        const body = new URLSearchParams({ code, value: String(next), day });
-        const res = await fetch("/bb26/admin/api/checkin", { method: "POST", body });
+      const { error } = await actions.setAttendance({
+        code: box.dataset.code ?? "",
+        day: box.dataset.day ?? "",
+        present: box.checked,
+      });
 
-        if (!res.ok) throw new Error("save failed");
-
-        const data = await res.json();
-
-        if (!data.ok) throw new Error("save failed");
-
-        const state = box.closest(".dayrow")?.querySelector(".dayrow__state");
-
-        if (state) {
-          state.textContent = next && data.checkedInAt ? `Checked in ${fmtClient(data.checkedInAt)}` : "Not checked in";
-        }
-
-        showToast(next ? "Day marked" : "Day cleared");
-      } catch {
-        box.checked = !next;
-        showToast("Could not save — try again", false);
-      } finally {
+      if (error) {
+        box.checked = !box.checked;
         box.disabled = false;
+        showError("Could not save — try again");
+
+        return;
       }
+
+      location.reload();
     });
   });
 </script>

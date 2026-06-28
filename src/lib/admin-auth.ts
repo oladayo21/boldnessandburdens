@@ -39,5 +39,7 @@ export function checkPassword(password: string): boolean {
 export function sessionCookie(request: Request): string {
   const secureFlag = new URL(request.url).protocol === "https:" ? " Secure;" : "";
 
-  return `${COOKIE_NAME}=${encodeURIComponent(secret())}; Path=/bb26; HttpOnly;${secureFlag} SameSite=Lax; Max-Age=${MAX_AGE}`;
+  // Path=/ (not /bb26) so the cookie is also sent to Astro action endpoints at
+  // /_actions/*, which the admin mutations (setAttendance, saveParticipant) gate on.
+  return `${COOKIE_NAME}=${encodeURIComponent(secret())}; Path=/; HttpOnly;${secureFlag} SameSite=Lax; Max-Age=${MAX_AGE}`;
 }
