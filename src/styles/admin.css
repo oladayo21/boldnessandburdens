@@ -1,0 +1,337 @@
+/*
+ * Admin console design system — standalone.
+ * Deliberately decoupled from the public conference brand (global.css):
+ * a neutral light SaaS dashboard with a blue accent. The ONLY shared asset
+ * with the marketing site is the logo. Reused across editions (bb26, bb27…).
+ */
+
+:root {
+  /* surfaces */
+  --ad-canvas: #f5f6f8;
+  --ad-panel: #ffffff;
+  --ad-panel-2: #f9fafb;
+  --ad-panel-3: #f3f4f6;
+
+  /* lines */
+  --ad-border: #e5e7eb;
+  --ad-border-strong: #d1d5db;
+
+  /* text */
+  --ad-text: #111827;
+  --ad-text-2: #6b7280;
+  --ad-text-3: #9ca3af;
+
+  /* accent (blue) */
+  --ad-accent: #2563eb;
+  --ad-accent-hover: #1d4ed8;
+  --ad-accent-weak: #eff4ff;
+  --ad-on-accent: #ffffff;
+
+  /* status */
+  --ad-positive: #16a34a;
+  --ad-positive-weak: #ecfdf3;
+  --ad-positive-border: #bbf7d0;
+  --ad-warn: #b45309;
+  --ad-warn-weak: #fffbeb;
+  --ad-warn-border: #fde68a;
+  --ad-danger: #dc2626;
+  --ad-danger-weak: #fef2f2;
+
+  /* shape */
+  --ad-r-xs: 5px;
+  --ad-r-sm: 7px;
+  --ad-r: 9px;
+  --ad-r-lg: 12px;
+  --ad-r-pill: 999px;
+
+  /* space */
+  --ad-1: 4px;
+  --ad-2: 8px;
+  --ad-3: 12px;
+  --ad-4: 16px;
+  --ad-5: 20px;
+  --ad-6: 24px;
+  --ad-8: 32px;
+  --ad-10: 40px;
+
+  --ad-font: "Geist Variable", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --ad-mono: "Geist Mono Variable", ui-monospace, "SF Mono", Menlo, Consolas,
+    monospace;
+  --ad-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--ad-font);
+  color: var(--ad-text);
+  background: var(--ad-canvas);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---- app shell ---- */
+.app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app__bar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(255, 255, 255, 0.85);
+  -webkit-backdrop-filter: saturate(1.6) blur(10px);
+  backdrop-filter: saturate(1.6) blur(10px);
+  border-bottom: 1px solid var(--ad-border);
+}
+
+.app__bar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--ad-4);
+  padding: var(--ad-2) var(--ad-5);
+}
+
+.app__brand {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  text-decoration: none;
+}
+.app__brand img { height: 34px; width: auto; display: block; }
+
+.app__divider {
+  width: 1px;
+  height: 24px;
+  background: var(--ad-border);
+  flex: 0 0 auto;
+}
+
+.app__title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ad-2);
+  min-width: 0;
+}
+.app__title h1 {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--ad-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.app__title small {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ad-text-3);
+  white-space: nowrap;
+}
+
+.app__actions {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ad-2);
+  flex: 0 0 auto;
+}
+
+.app__main {
+  flex: 1;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--ad-6) var(--ad-5) var(--ad-10);
+}
+
+/* Full-height mode: the shell fills the viewport and never scrolls; an inner
+   region (e.g. the roster table) becomes the only scroller. */
+.app--fill {
+  height: 100dvh;
+  overflow: hidden;
+}
+.app--fill .app__main {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: var(--ad-6);
+  overflow: hidden;
+}
+
+/* ---- buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ad-2);
+  padding: 7px 13px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--ad-text);
+  background: var(--ad-panel);
+  border: 1px solid var(--ad-border-strong);
+  border-radius: var(--ad-r-sm);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s var(--ad-ease), border-color 0.15s var(--ad-ease),
+    color 0.15s var(--ad-ease);
+}
+.btn:hover { background: var(--ad-panel-3); }
+.btn svg { width: 14px; height: 14px; }
+
+.btn--primary {
+  color: var(--ad-on-accent);
+  background: var(--ad-accent);
+  border-color: var(--ad-accent);
+}
+.btn--primary:hover { background: var(--ad-accent-hover); border-color: var(--ad-accent-hover); }
+
+.btn--ghost { background: transparent; border-color: transparent; color: var(--ad-text-2); }
+.btn--ghost:hover { background: var(--ad-panel-3); color: var(--ad-text); }
+
+.btn:focus-visible,
+a:focus-visible { outline: 2px solid var(--ad-accent); outline-offset: 2px; }
+
+/* ---- panel ---- */
+.panel {
+  background: var(--ad-panel);
+  border: 1px solid var(--ad-border);
+  border-radius: var(--ad-r-lg);
+}
+.panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ad-3);
+  padding: var(--ad-4) var(--ad-5);
+  border-bottom: 1px solid var(--ad-border);
+}
+.panel__title { margin: 0; font-size: 0.9rem; font-weight: 650; color: var(--ad-text); }
+
+/* ---- eyebrow / section label ---- */
+.eyebrow {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ad-text-3);
+}
+
+/* ---- generic badge ---- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: var(--ad-r-pill);
+  background: var(--ad-panel-3);
+  color: var(--ad-text-2);
+  border: 1px solid var(--ad-border);
+}
+.badge--mono { font-family: var(--ad-mono); letter-spacing: 0.02em; color: var(--ad-accent); background: var(--ad-accent-weak); border-color: transparent; }
+.badge--positive { color: var(--ad-positive); background: var(--ad-positive-weak); border-color: var(--ad-positive-border); }
+.badge--warn { color: var(--ad-warn); background: var(--ad-warn-weak); border-color: var(--ad-warn-border); }
+
+/* ---- toggle switch (shared on/off control) ---- */
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+.toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+.toggle__track {
+  position: relative;
+  display: block;
+  width: 40px;
+  height: 22px;
+  border-radius: var(--ad-r-pill);
+  background: var(--ad-border-strong);
+  transition: background 0.18s var(--ad-ease);
+}
+.toggle__track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.18s var(--ad-ease);
+}
+.toggle input:checked + .toggle__track { background: var(--ad-positive); }
+.toggle input:checked + .toggle__track::after { transform: translateX(18px); }
+.toggle input:focus-visible + .toggle__track { outline: 2px solid var(--ad-accent); outline-offset: 2px; }
+.toggle input:disabled + .toggle__track { opacity: 0.55; cursor: default; }
+
+/* ---- day pips (shared attendance motif, recolored neutral/positive) ---- */
+.pips { display: inline-flex; gap: 4px; }
+.pip {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1.5px solid var(--ad-border-strong);
+}
+.pip--on { background: var(--ad-positive); border-color: var(--ad-positive); }
+
+/* ---- sign-in (centered card) ---- */
+.signin {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: var(--ad-5);
+}
+.signin__card {
+  width: min(360px, 100%);
+  text-align: center;
+  background: var(--ad-panel);
+  border: 1px solid var(--ad-border);
+  border-radius: var(--ad-r-lg);
+  padding: var(--ad-8) var(--ad-6);
+}
+.signin__card img { height: 64px; width: auto; margin: 0 auto var(--ad-4); display: block; }
+.signin__card h1 { margin: 0 0 var(--ad-2); font-size: 1.15rem; font-weight: 650; }
+.signin__card p { margin: 0 0 var(--ad-5); color: var(--ad-text-2); font-size: 0.88rem; }
+.signin__card code { font-family: var(--ad-mono); font-size: 0.82em; background: var(--ad-panel-3); border-radius: var(--ad-r-xs); padding: 1px 5px; color: var(--ad-text); }
+.signin__form { display: flex; flex-direction: column; gap: var(--ad-3); }
+.signin__error { color: var(--ad-danger); background: var(--ad-danger-weak); border-radius: var(--ad-r-sm); padding: 8px; font-size: 0.82rem; margin: 0 0 var(--ad-2); }
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--ad-text);
+  background: var(--ad-panel);
+  border: 1px solid var(--ad-border-strong);
+  border-radius: var(--ad-r-sm);
+  outline: none;
+  transition: border-color 0.15s var(--ad-ease), box-shadow 0.15s var(--ad-ease);
+}
+.input::placeholder { color: var(--ad-text-3); }
+.input:focus { border-color: var(--ad-accent); box-shadow: 0 0 0 3px var(--ad-accent-weak); }
+
+@media (max-width: 640px) {
+  .app__bar-inner { padding: var(--ad-2) var(--ad-4); }
+  .app__main { padding: var(--ad-4) var(--ad-4) var(--ad-8); }
+  .app__title small { display: none; }
+}

@@ -1,6 +1,11 @@
 import { defineAction, ActionError } from "astro:actions";
 import { z } from "astro:schema";
-import { setAttendance, updateParticipant, markAttendance } from "../lib/db";
+import {
+  setAttendance,
+  updateParticipant,
+  markAttendance,
+  setArrived,
+} from "../lib/db";
 import { isAuthed } from "../lib/admin-auth";
 
 // Trim a form string; empty becomes null so the DB stores NULL, not "".
@@ -27,6 +32,25 @@ export const server = {
       }
 
       await setAttendance(code, day, present);
+
+      return { ok: true };
+    },
+  }),
+
+  // Admin: set/clear a participant's overall conference arrival (checked_in).
+  // Separate from per-day attendance — the roster "Check in" button calls this.
+  setArrived: defineAction({
+    accept: "json",
+    input: z.object({
+      code: z.string().min(1),
+      arrived: z.boolean(),
+    }),
+    handler: async ({ code, arrived }, ctx) => {
+      if (!isAuthed(ctx.request)) {
+        throw new ActionError({ code: "FORBIDDEN", message: "Not signed in." });
+      }
+
+      await setArrived(code, arrived);
 
       return { ok: true };
     },

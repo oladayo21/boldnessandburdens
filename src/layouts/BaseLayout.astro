@@ -1,4 +1,6 @@
 ---
+import { edition } from "../config/editions/bb26";
+
 interface Props {
   title: string;
   description?: string;
@@ -22,7 +24,7 @@ const {
 } = Astro.props;
 
 const canonicalURL = `${SITE_URL}${canonicalPath}`;
-const fullTitle = title.includes("BBC'26") ? title : `${title} | BBC'26`;
+const fullTitle = title.includes(edition.shortName) ? title : `${title} | ${edition.shortName}`;
 ---
 
 <!DOCTYPE html>

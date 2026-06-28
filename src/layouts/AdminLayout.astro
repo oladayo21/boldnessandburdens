@@ -1,0 +1,83 @@
+---
+// Standalone shell for the conference-management console. Intentionally does
+// NOT use BaseLayout (the public marketing brand). Own <head>, own design
+// system (admin.css). Shares only the logo with the public site.
+import type { Edition } from "../config/editions/bb26";
+
+// Self-hosted Geist (variable) — scoped to the admin via this layout so the
+// public marketing site keeps its own fonts.
+import "@fontsource-variable/geist";
+import "@fontsource-variable/geist-mono";
+
+interface Props {
+  edition: Edition;
+  /** Section name shown in the app bar, e.g. "Participants". */
+  section: string;
+  /** Optional muted summary after the section title, e.g. "45". */
+  summary?: string;
+  /** Optional <title> override; defaults to "<section> · <edition> Admin". */
+  pageTitle?: string;
+  /** Where the brand/logo links to (defaults to the roster home). */
+  home?: string;
+  /** Chrome-less mode for sign-in / not-found — no app bar, centered slot. */
+  bare?: boolean;
+  /** Full-height mode: page itself doesn't scroll; the slot owns its scroll. */
+  fill?: boolean;
+}
+
+const {
+  edition,
+  section,
+  summary,
+  pageTitle,
+  home = "/bb26/admin",
+  bare = false,
+  fill = false,
+} = Astro.props;
+const fullTitle = pageTitle ?? `${section} · ${edition.shortName} Admin`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <title>{fullTitle}</title>
+  </head>
+  <body>
+    {bare ? (
+      <slot />
+    ) : (
+      <div class:list={["app", { "app--fill": fill }]}>
+        <header class="app__bar">
+          <div class="app__bar-inner">
+            <a class="app__brand" href={home} aria-label={`${edition.shortName} console home`}>
+              <img src="/logo-black-trim.png" alt={edition.name} width="184" height="275" />
+            </a>
+            <span class="app__divider" aria-hidden="true"></span>
+            <div class="app__title">
+              <h1>{section}</h1>
+              {summary && <small>{summary}</small>}
+            </div>
+            <div class="app__actions">
+              <slot name="actions">
+                <a class="btn btn--ghost" href="/bb26">View site</a>
+              </slot>
+            </div>
+          </div>
+        </header>
+
+        <main class="app__main">
+          <slot />
+        </main>
+      </div>
+    )}
+  </body>
+</html>
+
+<style is:global>
+  @import "../styles/admin.css";
+</style>

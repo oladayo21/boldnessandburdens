@@ -20,6 +20,10 @@ export interface ParticipantAdminRow extends ParticipantCard {
   phone: string | null;
   city: string | null;
   stayingOnCamp: boolean;
+  // Overall conference arrival flag (participants.checked_in) — distinct from
+  // per-day session attendance.
+  arrived: boolean;
+  arrivedAt: string | null;
 }
 
 // One participant's full name by code — used to verify the last-name check on
@@ -75,7 +79,7 @@ export async function getCard(code: string): Promise<ParticipantCard | null> {
 export async function listParticipants(): Promise<ParticipantAdminRow[]> {
   const { results } = await env.DB.prepare(
     `SELECT participant_code, full_name, email, phone, city,
-            room_number, group_name, staying_on_camp
+            room_number, group_name, staying_on_camp, checked_in, checked_in_at
        FROM participants
       WHERE edition = ?
       ORDER BY full_name COLLATE NOCASE`,
@@ -90,6 +94,8 @@ export async function listParticipants(): Promise<ParticipantAdminRow[]> {
       room_number: string | null;
       group_name: string | null;
       staying_on_camp: number;
+      checked_in: number;
+      checked_in_at: string | null;
     }>();
 
   // One query for all attendance in this edition, grouped by participant.
@@ -117,6 +123,8 @@ export async function listParticipants(): Promise<ParticipantAdminRow[]> {
     group: r.group_name,
     attendance: byCode.get(r.participant_code) ?? {},
     stayingOnCamp: !!r.staying_on_camp,
+    arrived: !!r.checked_in,
+    arrivedAt: r.checked_in_at,
   }));
 }
 
@@ -127,7 +135,7 @@ export async function getAdminParticipant(
 ): Promise<ParticipantAdminRow | null> {
   const row = await env.DB.prepare(
     `SELECT participant_code, full_name, email, phone, city,
-            room_number, group_name, staying_on_camp
+            room_number, group_name, staying_on_camp, checked_in, checked_in_at
        FROM participants
       WHERE edition = ? AND participant_code = ?`,
   )
@@ -141,6 +149,8 @@ export async function getAdminParticipant(
       room_number: string | null;
       group_name: string | null;
       staying_on_camp: number;
+      checked_in: number;
+      checked_in_at: string | null;
     }>();
 
   if (!row) return null;
@@ -165,7 +175,31 @@ export async function getAdminParticipant(
     group: row.group_name,
     attendance,
     stayingOnCamp: !!row.staying_on_camp,
+    arrived: !!row.checked_in,
+    arrivedAt: row.checked_in_at,
   };
+}
+
+// Admin: set/clear a participant's overall conference arrival (checked_in).
+// Distinct from per-day attendance — this is "they're on site". Stamps
+// checked_in_at on arrival, clears it on un-check-in.
+export async function setArrived(
+  code: string,
+  arrived: boolean,
+): Promise<boolean> {
+  const flag = arrived ? 1 : 0;
+
+  const res = await env.DB.prepare(
+    `UPDATE participants
+        SET checked_in = ?,
+            checked_in_at = CASE WHEN ? = 1 THEN datetime('now') ELSE NULL END,
+            updated_at = datetime('now')
+      WHERE edition = ? AND participant_code = ?`,
+  )
+    .bind(flag, flag, edition.id, code)
+    .run();
+
+  return res.success;
 }
 
 // Admin update of a participant's editable details. Does not touch the overall
