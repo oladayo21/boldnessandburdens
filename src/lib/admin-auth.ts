@@ -7,7 +7,7 @@
 import { env } from "cloudflare:workers";
 
 const COOKIE_NAME = "bb_admin";
-const MAX_AGE = 60 * 60 * 12; // 12h
+const MAX_AGE = 60 * 60 * 24 * 7; // 7 days — survive a multi-day conference
 
 function secret(): string {
   return (env as unknown as { ADMIN_PASSWORD?: string }).ADMIN_PASSWORD ?? "";
