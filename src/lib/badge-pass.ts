@@ -31,6 +31,14 @@ async function sign(value: string): Promise<string> {
   return b64url(new Uint8Array(sig));
 }
 
+// Signed key that grants access to one badge via /bb26/<code>?k=<key>.
+// Used for the admin "show this QR" link. Stable per code (no expiry) so the
+// QR keeps working; unguessable without the secret, so it doesn't reopen the
+// enumeration hole.
+export async function badgeKey(code: string): Promise<string> {
+  return sign(code);
+}
+
 // Set-Cookie value that grants access to one participant's badge.
 export async function passCookie(code: string, request: Request): Promise<string> {
   const token = `${code}.${await sign(code)}`;

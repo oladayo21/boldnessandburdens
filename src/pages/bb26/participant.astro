@@ -5,7 +5,6 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { edition } from "../../config/editions/bb26";
 import { getParticipantName } from "../../lib/db";
 import { passCookie } from "../../lib/badge-pass";
-import qrSvg from "../../assets/badge-qr.svg?raw";
 
 // Accept "14", "BB26-14", "bb26014" etc. and normalise to "BB26-014".
 function normalizeCode(raw: string): string {
@@ -50,8 +49,6 @@ if (Astro.request.method === "POST") {
 
   error = "We couldn't match that ID and name. Check your BB26 ID and the spelling of your name.";
 }
-
-const shareUrl = `${edition.links.site}/bb26/participant`.replace(/^https?:\/\//, "");
 ---
 
 <BaseLayout
@@ -95,14 +92,6 @@ const shareUrl = `${edition.links.site}/bb26/participant`.replace(/^https?:\/\//
         </label>
         <button type="submit" class="go">Open my badge</button>
       </form>
-
-      <details class="share">
-        <summary>Share or print this page</summary>
-        <div class="share__body">
-          <div class="share__qr" set:html={qrSvg}></div>
-          <p class="share__url">{shareUrl}</p>
-        </div>
-      </details>
     </section>
   </main>
 </BaseLayout>
@@ -226,45 +215,4 @@ const shareUrl = `${edition.links.site}/bb26/participant`.replace(/^https?:\/\//
     transition: background-color 0.25s var(--ease-out), transform 0.25s var(--ease-out);
   }
   .go:hover { background: var(--color-accent-light); transform: translateY(-1px); }
-
-  /* ---- share / QR (collapsed by default) ---- */
-  .share {
-    margin-top: var(--space-xl);
-    text-align: center;
-  }
-  .share summary {
-    display: inline-flex;
-    font-family: var(--font-body);
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    color: var(--gold-3);
-    cursor: pointer;
-    list-style: none;
-  }
-  .share summary::-webkit-details-marker { display: none; }
-  .share summary:hover { color: var(--color-accent-dark); }
-
-  .share__body {
-    margin-top: var(--space-md);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-  .share__qr {
-    width: 180px;
-    padding: 12px;
-    background: #fff;
-    border: 1px solid var(--color-cream-dark);
-    border-radius: 12px;
-  }
-  .share__qr :global(svg) { display: block; width: 100%; height: auto; }
-  .share__url {
-    margin: 0;
-    font-family: var(--font-body);
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--gold-3);
-  }
 </style>

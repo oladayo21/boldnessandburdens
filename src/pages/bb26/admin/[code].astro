@@ -5,6 +5,8 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
 import { edition } from "../../../config/editions/bb26";
 import { getAdminParticipant } from "../../../lib/db";
 import { isAuthed } from "../../../lib/admin-auth";
+import { badgeKey } from "../../../lib/badge-pass";
+import { renderSVG } from "uqr";
 
 // Admin-only. The /bb26/admin index renders its own login form, so bounce
 // unauthed visitors there with a next= so they land back here after sign-in.
@@ -21,10 +23,18 @@ if (!p) {
 
 const saved = Astro.url.searchParams.get("saved");
 
-const initials = p
-  ? p.name.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase()
-  : "";
 const attendedCount = p ? Object.keys(p.attendance).length : 0;
+
+// Per-participant QR carrying a signed key — scanning (or clicking) it opens the
+// gated badge directly. Sits in the header for the admin to show.
+const badgeKeyValue = p ? await badgeKey(p.code) : "";
+const badgeQr = p
+  ? renderSVG(`${edition.links.site}/bb26/${p.code}?k=${badgeKeyValue}`, {
+      border: 2,
+      blackColor: "#1e1610",
+      whiteColor: "#ffffff",
+    })
+  : "";
 
 // checked_in_at is stored UTC ("YYYY-MM-DD HH:MM:SS"); show it in Berlin time.
 function fmtCheckin(ts: string): string {
@@ -71,13 +81,7 @@ function fmtCheckin(ts: string): string {
 
         <section class="con__inner">
           <header class="profile">
-            <span class="crest" aria-hidden="true">
-              <span class="crest__slot"></span>
-              <span class="crest__mono">{initials}</span>
-            </span>
-
             <div class="profile__id">
-              <p class="kicker">Participant record</p>
               <h1 class="profile__name">{p.name}</h1>
               <div class="tags">
                 <span class="tag tag--code">{p.code}</span>
@@ -95,7 +99,14 @@ function fmtCheckin(ts: string): string {
               </div>
             </div>
 
-            <a class="profile__badge" href={`/bb26/${p.code}`} target="_blank" rel="noopener">View badge →</a>
+            <a
+              class="profile__qr"
+              href={`/bb26/${p.code}?k=${badgeKeyValue}`}
+              target="_blank"
+              rel="noopener"
+              aria-label={`Open ${p.name}'s badge`}
+              set:html={badgeQr}
+            ></a>
           </header>
 
           <p id="toast" class="toast" hidden={!saved}>{saved ? "Details saved" : ""}</p>
@@ -103,7 +114,6 @@ function fmtCheckin(ts: string): string {
           <section class="card">
             <div class="card__head">
               <h2 class="card__title">Daily attendance</h2>
-              <p class="card__hint">Tick a day to mark or clear it. Saves instantly.</p>
             </div>
             <div class="days">
               {edition.days.map((d) => {
@@ -130,7 +140,6 @@ function fmtCheckin(ts: string): string {
           <form method="POST" action="/bb26/admin/api/update" class="card">
             <div class="card__head">
               <h2 class="card__title">Details</h2>
-              <p class="card__hint">Logistics and contact. Press save to apply.</p>
             </div>
             <input type="hidden" name="code" value={p.code} />
 
@@ -343,45 +352,27 @@ function fmtCheckin(ts: string): string {
     gap: var(--space-md);
   }
 
-  /* ---- profile header with leather crest ---- */
+  /* ---- profile header (name + tags + badge QR) ---- */
   .profile {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: var(--space-lg);
     padding: var(--space-xl) 0 var(--space-md);
   }
 
-  .crest {
-    position: relative;
+  .profile__qr {
     flex: 0 0 auto;
-    width: 78px;
-    height: 96px;
-    border-radius: 14px;
-    display: grid;
-    place-items: center;
-    background:
-      radial-gradient(120% 80% at 50% -10%, rgba(255, 255, 255, 0.08), transparent 60%),
-      linear-gradient(180deg, var(--leather-1), var(--leather-2));
-    box-shadow: 0 12px 26px -12px rgba(30, 22, 16, 0.6), inset 0 0 0 1px rgba(216, 178, 86, 0.18);
+    display: block;
+    width: 116px;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    transition: border-color 0.15s var(--ease-out);
   }
-  .crest__slot {
-    position: absolute;
-    top: 9px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 32px;
-    height: 6px;
-    border-radius: 999px;
-    background: #0c0a09;
-  }
-  .crest__mono {
-    margin-top: 10px;
-    font-family: var(--font-display);
-    font-size: 2.4rem;
-    letter-spacing: 0.06em;
-    color: var(--gold);
-    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
-  }
+  .profile__qr :global(svg) { display: block; width: 100%; height: auto; }
+  .profile__qr:hover { border-color: var(--color-accent); }
 
   .profile__id { flex: 1; min-width: 0; }
   .profile__name {
@@ -412,22 +403,6 @@ function fmtCheckin(ts: string): string {
   .tag--camp { background: rgba(92, 138, 110, 0.12); border-color: rgba(92, 138, 110, 0.3); color: #3a6b52; }
   .tag--day { background: rgba(212, 135, 58, 0.14); border-color: rgba(212, 135, 58, 0.4); color: var(--color-accent-dark); }
   .tag__pips { display: inline-flex; gap: 4px; }
-
-  .profile__badge {
-    align-self: flex-start;
-    flex: 0 0 auto;
-    font-family: var(--font-body);
-    font-size: 0.76rem;
-    font-weight: 600;
-    color: var(--color-accent-dark);
-    text-decoration: none;
-    border: 1px solid var(--line);
-    background: var(--paper);
-    border-radius: 999px;
-    padding: 8px 14px;
-    white-space: nowrap;
-  }
-  .profile__badge:hover { border-color: var(--color-accent); color: var(--color-accent-dark); }
 
   /* day pips — shared per-day attendance motif */
   .pip {
@@ -465,7 +440,6 @@ function fmtCheckin(ts: string): string {
     letter-spacing: 0.03em;
     color: var(--ink);
   }
-  .card__hint { margin: 4px 0 0; font-family: var(--font-body); font-size: 0.8rem; color: var(--ink-soft); }
 
   /* ---- daily attendance rows ---- */
   .days { display: flex; flex-direction: column; gap: 8px; }
@@ -592,7 +566,6 @@ function fmtCheckin(ts: string): string {
   .save:hover { background: var(--color-accent-light); transform: translateY(-1px); }
 
   @media (max-width: 540px) {
-    .profile { flex-wrap: wrap; }
-    .profile__badge { order: 3; }
+    .profile { flex-direction: column-reverse; align-items: flex-start; }
   }
 </style>
